@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "run-p -sr \"shopify:dev -- {@}\" \"vite:dev\" --",
-    "deploy": "run-s \"vite:build\" \"shopify:push -- {@}\" --",
+    "dev": "npm-run-all shopify:dev vite:dev",
+    "deploy": "npm-run-all vite:build shopify:push",
     "shopify:dev": "shopify theme dev",
     "shopify:push": "shopify theme push",
     "vite:dev": "vite",
