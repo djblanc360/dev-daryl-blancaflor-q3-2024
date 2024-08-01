@@ -1,7 +1,39 @@
-<section class='bg-red-300'>
+<section class='bg-[{{ section.settings.background_color }}]'>
   <h1>{{ shop.name }}</h1>
   <nav>
-    {%- render 'header' -%}
+    {%- render 'header', settings:settings -%}
   </nav>
   <p>Section header.liquid rendered</p>
 </section>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_src",
+      "label": "Logo Image",
+      "default": ""
+    },
+    {
+      "type": "url",
+      "id": "account_url",
+      "label": "Account Page URL",
+      "default": "/account"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    }
+  ]
+}
+{% endschema %}}

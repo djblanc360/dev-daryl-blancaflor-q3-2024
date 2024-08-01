@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import chokidar from 'chokidar';
+import chokidar from 'chokidar'; // https://www.npmjs.com/package/chokidar
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,12 +13,10 @@ const assetsDir = path.join(__dirname, 'assets');
 const mainJsPath = path.join(__dirname, 'frontend', 'entrypoints', 'main.js');
 
 /**
- * reates a symlink from srcPath to destPath
+ * creates a symlink from srcPath to destPath
  * @typedef {import('fs').PathLike} PathLike
- * @property {string} srcPath
- * @property {string} destPath
- * @param {*} srcPath 
- * @param {*} destPath 
+ * @param {PathLike} srcPath
+ * @param {PathLike} destPath
  */
 async function createSymlink(srcPath, destPath) {
   try {
@@ -38,8 +36,8 @@ async function createSymlink(srcPath, destPath) {
  * @typedef {import('fs').PathLike} PathLike
  * @property {string} srcPath
  * @property {string} destPath
- * @param {*} srcPath 
- * @param {*} destPath 
+ * @param {PathLike} srcPath
+ * @param {PathLike} destPath
  */
 async function copyFile(srcPath, destPath) {
   try {
@@ -55,8 +53,8 @@ async function copyFile(srcPath, destPath) {
  * checks if file exists at filePath
  * @typedef {import('fs').PathLike} PathLike
  * @property {string} filePath
- * @param {*} filePath 
- * @returns 
+ * @param {PathLike} filePath
+ * @returns {Promise<boolean>}
  */
 async function exists(filePath) {
   try {
@@ -71,7 +69,7 @@ async function exists(filePath) {
  * ensures a directory exists at dir
  * @typedef {import('fs').PathLike} PathLike
  * @property {string} dir
- * @param {*} dir 
+ * @param {PathLike} dir
  */
 async function ensureDirectoryExists(dir) {
   if (!await exists(dir)) {
@@ -84,7 +82,7 @@ async function ensureDirectoryExists(dir) {
  * updates the main.js file with an import statement for the given importPath
  * @typedef {import('fs').PathLike} PathLike
  * @property {string} importPath
- * @param {*} importPath 
+ * @param {string} importPath
  */
 async function updateMainJs(importPath) {
   try {
@@ -99,6 +97,26 @@ async function updateMainJs(importPath) {
 }
 
 /**
+ * removes an import statement from the main.js file
+ * @typedef {import('fs').PathLike} PathLike
+ * @property {string} importPath
+ * @param {string} importPath
+ */
+async function removeFromMainJs(importPath) {
+  try {
+    let mainJsContent = await fs.readFile(mainJsPath, 'utf8');
+    const importStatement = `import '${importPath}';`;
+    if (mainJsContent.includes(importStatement)) {
+      mainJsContent = mainJsContent.replace(importStatement, '').trim();
+      await fs.writeFile(mainJsPath, mainJsContent);
+      console.log(`main.js updated: removed import '${importPath}';`);
+    }
+  } catch (err) {
+    console.error(`Error removing import '${importPath}' from main.js:`, err);
+  }
+}
+
+/**
  * watches for changes in the components directory
  * @typedef {import('chokidar').FSWatcher} FSWatcher
  * @property {string} componentsDir
@@ -106,11 +124,11 @@ async function updateMainJs(importPath) {
  * @property {string} snippetsDir
  * @property {string} assetsDir
  * @property {string} mainJsPath
- * @param {*} componentsDir
- * @param {*} sectionsDir
- * @param {*} snippetsDir
- * @param {*} assetsDir
- * @param {*} mainJsPath
+ * @param {string} componentsDir
+ * @param {string} sectionsDir
+ * @param {string} snippetsDir
+ * @param {string} assetsDir
+ * @param {string} mainJsPath
  * @returns
  */
 chokidar.watch(componentsDir, { persistent: true })
@@ -153,6 +171,26 @@ chokidar.watch(componentsDir, { persistent: true })
 
       await copyFile(filePath, destPath);
       await updateMainJs(`../../assets/${newFileName}`);
+    }
+  })
+  .on('unlink', async (filePath) => {
+    const relativePath = path.relative(componentsDir, filePath);
+    const pathParts = relativePath.split(path.sep);
+    const component = pathParts[0];
+    const fileName = pathParts[pathParts.length - 1];
+
+    if (fileName.endsWith('.js')) {
+      const newFileName = fileName === 'index.js' ? `${component}.js` : `${component}_${fileName}`;
+      const importPath = `../../assets/${newFileName}`;
+      await removeFromMainJs(importPath);
+      const destPath = path.join(assetsDir, newFileName);
+
+      try {
+        await fs.unlink(destPath);
+        console.log(`File removed: ${destPath}`);
+      } catch (err) {
+        console.error(`Error removing file ${destPath}:`, err);
+      }
     }
   })
   .on('error', error => console.error('Error watching files:', error));
