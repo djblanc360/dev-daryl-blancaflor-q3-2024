@@ -1,27 +1,24 @@
-<section class='bg-[{{ section.settings.background_color }}]'>
-  <h1>{{ shop.name }}</h1>
+<section class='bg-red-300'>
   <nav>
-    {%- render 'header', settings:settings -%}
+    {%- render 'header' -%}
   </nav>
-  <p>Section header.liquid rendered</p>
 </section>
+
+
+{% comment %} <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = new Header(
+      '{{ section.settings.logo_src }}',
+      '{{ section.settings.account_url }}'
+    );
+    header.render();
+  });
+</script> {% endcomment %}
 
 {% schema %}
 {
   "name": "Header",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "logo_src",
-      "label": "Logo Image",
-      "default": ""
-    },
-    {
-      "type": "url",
-      "id": "account_url",
-      "label": "Account Page URL",
-      "default": "/account"
-    },
     {
       "type": "color",
       "id": "background_color",
@@ -36,4 +33,4 @@
     }
   ]
 }
-{% endschema %}}
+{% endschema %}
