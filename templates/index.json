@@ -1,10 +1,26 @@
 {
   "sections": {
     "hero": {
-      "type": "hero"
+      "type": "hero",
+      "settings": {
+        "title": "BYLT Basics",
+        "subtitle": "premium basics",
+        "button_link": "shopify:\/\/collections\/all",
+        "button_text": "Shop Now"
+      }
     },
     "collection": {
-      "type": "collection"
+      "type": "collection",
+      "settings": {
+        "product_collection": "frontpage",
+        "product_layout": "grid",
+        "carousel_heading": "Our Featured Products",
+        "carousel_items": 5,
+        "grid_columns": 4,
+        "show_product_titles": true,
+        "show_list_images": true,
+        "show_list_descriptions": true
+      }
     }
   },
   "order": [

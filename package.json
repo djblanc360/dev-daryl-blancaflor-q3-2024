@@ -9,8 +9,10 @@
     "symlinks": "echo 'running symlinks' && node symlinks.js",
     "shopify:dev": "echo 'running shopify theme push' && shopify theme dev",
     "shopify:push": "shopify theme push",
+    "shopify:pull": "shopify theme pull",
     "vite:dev": "echo 'running vite' && vite",
-    "vite:build": "vite build"
+    "vite:build": "vite build",
+    "pull": "npm run shopify:pull && npm run symlinks"
   },
   "author": "",
   "license": "ISC",

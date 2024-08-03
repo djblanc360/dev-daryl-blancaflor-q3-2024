@@ -1,15 +1,12 @@
 {
-    "sections": {
-      "header": {
-        "type": "header",
-        "title": "Page",
-        "subtitle": "This is a page template",
-        "icon": "page",
-        "iconColor": "blue",
-        "iconSize": "large"
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
       }
-    },
-    "order": [
-      "header"
-    ]
+    }
+  },
+  "order": [
+    "header"
+  ]
 }
