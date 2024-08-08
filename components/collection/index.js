@@ -9,7 +9,7 @@ class Collection {
   }
 }
 
-// conditionally instantiate Collection if a specific DOM element exists
+// conditionally instantiate Collection if a specific DOM element exists to prevent running on all pages
 if (document.querySelector('.collection-wrapper')) {
   new Collection();
 }

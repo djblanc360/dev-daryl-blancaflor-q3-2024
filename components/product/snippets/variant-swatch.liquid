@@ -1,0 +1,33 @@
+<div class="">
+<variant-swatch>
+  <div class="flex flex-col gap-2.5 md:gap-5">
+    {% for option in product.options %}
+      <div class="border-border p-4 max-md:px-0 md:border">
+        <div class="flex items-center gap-2">{{ option.name }}: <span>{{ option.values[0] }}</span></div>
+        <ul class="mb-2 flex flex-wrap gap-4">
+          {% for variant in product.variants %}
+            <li>
+              <button class="w-8 h-8 rounded-full border border-border variant-option" style="background-color: {{ variant.option | split: ' ' | last }};" data-variant-id="{{ variant.id }}"></button>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</variant-swatch>
+</div>
+
+{% comment %}
+<div class="swiper">
+  <div class="swiper-wrapper">
+    {% for variant in product.variants %}
+      <div class="swiper-slide">
+        <img src="{{ variant.image.src }}" alt="{{ variant.title }}">
+      </div>
+    {% endfor %}
+  </div>
+  <div class="swiper-pagination"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
+{% endcomment %}

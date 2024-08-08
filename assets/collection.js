@@ -1,15 +1,1 @@
-class Collection {
-  constructor() {
-    console.log('collection script loaded');
-    this.init();
-  }
-
-  init() {
-    // init collection-specific logic
-  }
-}
-
-// conditionally instantiate Collection if a specific DOM element exists
-if (document.querySelector('.collection-wrapper')) {
-  new Collection();
-}
+D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/collection/index.js

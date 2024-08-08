@@ -5,14 +5,14 @@
       "settings": {
       }
     },
-    "collection": {
-      "type": "collection",
+    "product": {
+      "type": "product",
       "settings": {
       }
     }
   },
   "order": [
     "hero",
-    "collection"
+    "product"
   ]
 }

@@ -1,0 +1,80 @@
+s<div class="product-page">
+
+  <div class="lg:px-contained py-6 pb-[25px] lg:py-10 lg:py-[22px] lg:pb-[30px]">
+    <div class="mx-auto grid max-w-[80rem] grid-cols-1 gap-y-5 overflow-x-hidden lg:max-w-none lg:grid-cols-[55%_43%] lg:grid-rows-[auto_1fr] lg:gap-x-6 lg:gap-y-4 xl:grid-cols-[66%_calc(34%-1.5rem)]">
+
+      <div class="lg:top-[calc(var(--header-height)+2.5rem)] xl:top-[calc(var(--header-height)+3rem)]">
+        {% render 'media-gallery' %} 
+      </div>
+
+      <div class="px-5 md:self-start lg:px-0 lg:pl-0 lg:pr-[12px]">
+        <div class="flex flex-col gap-y-4 lg:sticky lg:top-[calc(var(--header-height)+2.5rem)] xl:top-[calc(var(--header-height)+3rem)]">
+          <div class="flex flex-col gap-4 lg:gap-5">
+
+
+            {% comment %} <!-- first --> {% endcomment %}
+            <div class="relative flex justify-between text-xl">
+              <h1 class="pdp-title max-w-[50%]">{{ product.type }}</h1>
+              <div class="flex flex-col items-end">
+                <div class="flex min-h-[1.5rem] gap-2">
+                  <p class="null pdp-title font-bold lg:text-[19.2px]">{{ product.price }}</p>
+                </div>
+              </div>
+              <div class="absolute right-0 top-6">
+                <div class="h-[22px] text-[10px] text-nowrap whitespace-nowrap flex items-center whitespace-nowrap rounded-full border-[1px] border-secondary  px-2 font-bold uppercase text-secondary max-md:mr-0 max-md:text-[8px] md:py-1">
+                  {{ product.type }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 lg:gap-5">
+
+              {% if section.settings.variant_display_type == 'swatch' %}
+                {% render 'variant-swatch' %}
+              {% else %}
+                <select id="variant-dropdown">
+                  {% for variant in product.variants %}
+                    <option value="{{ variant.id }}">{{ variant.title }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+
+            </div>
+
+            {% render 'product-form' %}
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+
+</div>
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    {
+      "type": "select",
+      "id": "variant_display_type",
+      "label": "Variant Display Type",
+      "options": [
+        {
+          "value": "swatch",
+          "label": "Variant Swatch"
+        },
+        {
+          "value": "dropdown",
+          "label": "Dropdown Menu"
+        }
+      ],
+      "default": "swatch"
+    }
+  ]
+}
+{% endschema %}

@@ -1,8 +1,1 @@
-class Grid extends HTMLElement {
-  constructor() {
-    super();
-    console.log('grid component initialized');
-  }
-}
-
-customElements.define('grid-component', Grid);
+D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/grid/index.js

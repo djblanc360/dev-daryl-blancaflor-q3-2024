@@ -21,7 +21,8 @@
             <li>
               {% if section.settings.show_list_images %}
                 <a href="{{ product.url }}">
-                  {% assign product_image = product.featured_image | default: product.images.first %}
+                  {% assign base_url = "https://cdn.shopify.com/s/files/1/0712/3140/6331/" %}
+                  {% assign product_image = product.images[0] %}
                   {% for variant in product.variants %}
                     {% if variant.image %}
                       {% assign product_image = variant.image %}
@@ -29,7 +30,7 @@
                     {% endif %}
                   {% endfor %}
                   {% if product_image %}
-                    <img src="{{ product_image | image_url: 'small' }}" alt="{{ product.title }}" width="100" height="100">
+                    <img src="{{ base_url }}{{ product_image.src | split: '/' | last }}" alt="{{ product.title }}" width="100%" height="100%">
                   {% endif %}
                 </a>
               {% endif %}

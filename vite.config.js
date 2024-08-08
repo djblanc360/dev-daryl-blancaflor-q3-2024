@@ -6,7 +6,17 @@ export default defineConfig({
     shopify()
   ],
   build: {
-    emptyOutDir: false
+    emptyOutDir: false,
+    rollupOptions: {
+      input: {
+        main: './frontend/entrypoints/main.js',
+      },
+      output: {
+        entryFileNames: '[name]-[hash].js',
+        assetFileNames: '[name]-[hash][extname]',
+        dir: 'assets',
+      }
+    }
   },
   resolve: {
     preserveSymlinks: true, // ensure vite follows symlink
