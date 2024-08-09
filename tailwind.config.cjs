@@ -3,6 +3,7 @@ module.exports = {
   // prefix: 'tw-',
   content: [
     './**/*.liquid',
+    '!./node_modules/**/*', // had error including node_modules
     './frontend/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {

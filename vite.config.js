@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite';
 import shopify from 'vite-plugin-shopify';
+import liquid from '@vituum/vite-plugin-liquid'; // handle live reload for liquid files
 
 export default defineConfig({
   plugins: [
-    shopify()
+    shopify(),
+    liquid({
+      root: './components',
+      formats: ['liquid'],
+    })
   ],
   build: {
     emptyOutDir: false,

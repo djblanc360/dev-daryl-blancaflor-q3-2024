@@ -124,11 +124,11 @@ async function handleFileChange(filePath) {
     const destDir = type === 'sections' ? sectionsDir : snippetsDir;
     const destPath = path.join(destDir, fileName);
     console.log(`updating ${type} file: ${destPath}`);
-    // await removeSymlink(destPath);
-    // await createSymlink(filePath, destPath);
-    if (!symlinkedPaths.has(destPath)) {
-      await createSymlink(filePath, destPath);
-    }
+    await removeSymlink(destPath);
+    await createSymlink(filePath, destPath);
+    // if (!symlinkedPaths.has(destPath)) {
+    //   await createSymlink(filePath, destPath);
+    // }
   } else if (fileName.endsWith('.js')) {
     const newFileName = fileName === 'index.js' ? `${component}.js` : `${component}_${fileName}`;
     const destPath = path.join(assetsDir, newFileName);
@@ -137,6 +137,9 @@ async function handleFileChange(filePath) {
       await createSymlink(filePath, destPath);
     }
   }
+
+
+  
 }
 
 /**
@@ -167,11 +170,36 @@ async function handleFileRemoval(filePath) {
 /**
  * Watches for changes in the components directory
  */
-chokidar.watch(componentsDir, { persistent: true })
+const watcher = chokidar.watch(componentsDir, { persistent: true })
+watcher
   .on('add', handleFileAddition)
-  .on('change', debounce(handleFileChange,100))
   .on('unlink', handleFileRemoval)
   .on('error', error => console.error('Error watching files:', error));
+
+  //.on('change', debounce(handleFileChange,100))
+  async function onChokidarChange() {
+    return new Promise((resolve, reject) => {
+  
+      watcher
+        .on('change', debounce(async (filePath) => {
+          try {
+            await handleFileChange(filePath);
+            resolve(`File change handled for: ${filePath}`);
+          } catch (error) {
+            reject(`Error handling file change for: ${filePath}`, error);
+          }
+        }, 100))
+        .on('error', (error) => {
+          reject(`Watcher error: ${error}`);
+        });
+    });
+  }
+  
+  onChokidarChange().then(response => {
+    console.log(response);
+  }).catch(error => {
+    console.error(`Error onChokidarChange: ${error}`);
+  });
 
 /**
  * Sets up the initial symlinks and file copies
