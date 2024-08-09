@@ -1,12 +1,10 @@
-import Swiper from 'swiper';
-import { Navigation, Pagination, Thumbs } from 'swiper/modules';
-import 'swiper/swiper-bundle.css'; 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/thumbs';
+import Swiper from 'swiper'
+import 'swiper/css/bundle'
+import 'swiper/css/navigation'
+import 'swiper/css/thumbs'
+import { Navigation, Thumbs } from 'swiper/modules'
 
-Swiper.use([Navigation, Pagination, Thumbs]);
+Swiper.use([Navigation, Thumbs]);
 
 class ProductForm extends HTMLElement {
   constructor() {
@@ -31,24 +29,12 @@ class VariantSwatch extends HTMLElement {
     console.log('in VariantSwatch');
   }
 
-  connectedCallback() {
-    // this.initSwiper();
+  selectVariant(variant) {
+    const event = new CustomEvent('variantChange', { detail: { variant } });
+    this.dispatchEvent(event);
   }
 
-  initSwiper() {
-    new Swiper(this.querySelector('.swiper'), {
-      modules: [Navigation, Pagination],
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-      },
-      loop: true,
-      slidesPerView: 3,
-      spaceBetween: 10,
-    });
+  connectedCallback() {
   }
 }
 // customElements.define('variant-swatch', VariantSwatch);
@@ -68,20 +54,25 @@ class MediaGallery extends HTMLElement {
     const galleryThumbs = new Swiper('.gallery-thumbs', {
       spaceBetween: 10,
       slidesPerView: 4,
-      freeMode: true,
       watchSlidesProgress: true,
       direction: 'vertical',
+      rewind: true,
+      breakpoints: {
+        640: {
+          slidesPerView: 3,
+          spaceBetween: 40
+        }
+      },
     });
 
     new Swiper('.gallery-main', {
       spaceBetween: 10,
+      slidesPerView: 1,
+      centeredSlides: true,
+      rewind: true,
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
       },
       thumbs: {
         swiper: galleryThumbs,
@@ -95,12 +86,17 @@ class MediaGallery extends HTMLElement {
 
 class Product {
   constructor() {
-    console.log('in Product');
+    console.log('in Product', window.product);
     this.initializeWebComponents();
+    window.addEventListener('variantChange', this.updateProductState)
   }
 
   connectedCallback() {
     console.log('in Product connectedCallback');
+  }
+
+  updateProductState(event) {
+    console.log('in updateProductState', event.detail);
   }
 
   initializeWebComponents() {

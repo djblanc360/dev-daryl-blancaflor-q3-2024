@@ -123,14 +123,16 @@ async function handleFileChange(filePath) {
   if (type === 'sections' || type === 'snippets') {
     const destDir = type === 'sections' ? sectionsDir : snippetsDir;
     const destPath = path.join(destDir, fileName);
-
+    console.log(`updating ${type} file: ${destPath}`);
+    // await removeSymlink(destPath);
+    // await createSymlink(filePath, destPath);
     if (!symlinkedPaths.has(destPath)) {
       await createSymlink(filePath, destPath);
     }
   } else if (fileName.endsWith('.js')) {
     const newFileName = fileName === 'index.js' ? `${component}.js` : `${component}_${fileName}`;
     const destPath = path.join(assetsDir, newFileName);
-
+    console.log(`updating ${type} file: ${destPath}`);
     if (!symlinkedPaths.has(destPath)) {
       await createSymlink(filePath, destPath);
     }
@@ -167,7 +169,7 @@ async function handleFileRemoval(filePath) {
  */
 chokidar.watch(componentsDir, { persistent: true })
   .on('add', handleFileAddition)
-  .on('change', handleFileChange) // Log file changes for debugging
+  .on('change', debounce(handleFileChange,100))
   .on('unlink', handleFileRemoval)
   .on('error', error => console.error('Error watching files:', error));
 
@@ -213,3 +215,12 @@ chokidar.watch(componentsDir, { persistent: true })
     console.error('Error during initial setup:', err);
   }
 })();
+
+
+function debounce(func, timeout){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}

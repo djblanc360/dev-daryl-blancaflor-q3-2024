@@ -24,7 +24,8 @@ export default defineConfig({
   server: { // ensure  handling of symlinks and live reload
     watch: {
       usePolling: true, // watch for changes in symlinked files 
-      interval: 100
+      interval: 200, // adjust since chokidar is default 100
+      include: ['**/*.liquid'], // explicit to reinforce on change
     }
   }
 });
