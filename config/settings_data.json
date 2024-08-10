@@ -1,5 +1,39 @@
 {
   "current": {
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "background_color": "#ffffff",
+          "text_color": "#000000"
+        }
+      },
+      "promotions": {
+        "type": "promotions",
+        "blocks": {
+          "promotion_K9VAz9": {
+            "type": "promotion",
+            "settings": {
+              "key": "welcome",
+              "title": "Welcome",
+              "message": "welcome message",
+              "utm_medium": "welcome",
+              "discountCode": "",
+              "isActive": true,
+              "condition": ""
+            }
+          }
+        },
+        "block_order": [
+          "promotion_K9VAz9"
+        ],
+        "settings": {
+        }
+      }
+    },
+    "content_for_index": [
+
+    ]
   },
   "presets": {
     "Default": {

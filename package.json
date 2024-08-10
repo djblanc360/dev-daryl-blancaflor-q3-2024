@@ -12,7 +12,7 @@
     "shopify:pull": "shopify theme pull",
     "vite:dev": "echo 'running vite' && vite",
     "vite:build": "vite build",
-    "pull": "npm run shopify:pull && npm run symlinks"
+    "pull": "npm run shopify:pull -- --only=templates config/settings_data.json"
   },
   "author": "",
   "license": "ISC",

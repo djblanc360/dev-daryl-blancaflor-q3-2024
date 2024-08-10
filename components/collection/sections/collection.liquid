@@ -1,15 +1,37 @@
 <div class="collection-wrapper">
-  <p>collection handle: {{ section.settings.product_collection }}</p>
-  <p>yayout tpe: {{ section.settings.product_layout }}</p>
+  {% comment %} <p>collection handle: {{ section.settings.product_collection }}</p>
+  <p>layout tpe: {{ section.settings.product_layout }}</p> {% endcomment %}
   {% assign collection = collections[section.settings.product_collection] %}
+  {% if collection == blank %}
+    {% assign collection = collections['frontpage']%}
+  {% endif %}
   {% if collection and collection.products.size > 0 %}
-    <p>products found: {{ collection.products.size }}</p>
+    {% comment %} <p>products found: {{ collection.products.size }}</p> {% endcomment %}
     {% assign products = collection.products %}
+    {% assign products_json = products | json | escape %}
     {% case section.settings.product_layout %}
       {% when 'carousel' %}
+        {% assign settings_json = section.settings | json | escape %}
+
         <h2>{{ section.settings.carousel_heading }}</h2>
-        {% render 'carousel', products: products, items: section.settings.carousel_items %}
+        <div class="collection-carousel">
+          <base-carousel data-products="{{ products_json }}" data-settings="{{ settings_json }}">
+            <div class="swiper carousel">
+              <div class="swiper-wrapper">
+                {% for product in products %}
+                  <div class="swiper-slide">
+                    {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+          </base-carousel>
+        </div>
       {% when 'grid' %}
+        <h2>{{ collection.title }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-{{ section.settings.grid_columns }} gap-4">
           {% for product in products %}
             {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
