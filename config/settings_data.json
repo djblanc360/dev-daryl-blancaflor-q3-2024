@@ -14,10 +14,22 @@
           "promotion_K9VAz9": {
             "type": "promotion",
             "settings": {
-              "key": "welcome",
+              "key": "welcome_utm",
               "title": "Welcome",
               "message": "welcome message",
-              "utm_medium": "welcome",
+              "utm_medium": "",
+              "discountCode": "",
+              "isActive": true,
+              "condition": ""
+            }
+          },
+          "promotion_JEf3ER": {
+            "type": "promotion",
+            "settings": {
+              "key": "deal10",
+              "title": "Deal 10",
+              "message": "Promotion message",
+              "utm_medium": "",
               "discountCode": "",
               "isActive": true,
               "condition": ""
@@ -25,7 +37,57 @@
           }
         },
         "block_order": [
-          "promotion_K9VAz9"
+          "promotion_K9VAz9",
+          "promotion_JEf3ER"
+        ],
+        "settings": {
+        }
+      },
+      "modals": {
+        "type": "modals",
+        "blocks": {
+          "modal_hkwajT": {
+            "type": "modal",
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "welcome_utm",
+              "location_type": "",
+              "modal_size": "regular",
+              "header_copy": "Welcome",
+              "header_position": "left",
+              "body_copy": "<p>this is the welcome body<\/p>",
+              "background_color": "#25293b",
+              "header_color": "#ffffff",
+              "body_color": "#ffffff",
+              "cta_copy": "",
+              "cta_url": "",
+              "cta_color": "#000000",
+              "cta_text_color": "#ffffff"
+            }
+          },
+          "modal_kiUGj6": {
+            "type": "modal",
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "deal10",
+              "location_type": "",
+              "modal_size": "fullscreen",
+              "header_copy": "BYLT Basics",
+              "header_position": "center",
+              "body_copy": "<h5>Lock in <strong>10% Off!<\/strong><br\/>Share who you're shopping for to activate your discount<\/h5>",
+              "background_color": "#ffffff",
+              "header_color": "#000000",
+              "body_color": "#000000",
+              "cta_copy": "Shop",
+              "cta_url": "shopify:\/\/collections\/joggers",
+              "cta_color": "#25293b",
+              "cta_text_color": "#ffffff"
+            }
+          }
+        },
+        "block_order": [
+          "modal_hkwajT",
+          "modal_kiUGj6"
         ],
         "settings": {
         }

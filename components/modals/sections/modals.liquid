@@ -1,0 +1,202 @@
+
+<div class="modal-container">
+  {% for block in section.blocks %}
+  {% assign settings = block.settings | json | escape %}
+  <base-modal 
+    data-id="{{ section.id }}"
+    data-settings="{{ settings }}"
+  >
+  <div class="modal fixed z-20 hidden
+    {%  if block.settings.modal_size == 'regular' %}
+      top-1/2 left-1/2 h-1/2 w-1/2 transform -translate-x-1/2 -translate-y-1/2
+    {% elsif block.settings.modal_size == 'fullscreen' %}
+      top-0 left-0 h-screen w-screen
+    {% endif %}
+    "
+    style="background-color: {{ block.settings.background_color }};"
+  >
+    <div class="modal-content h-full flex flex-col">
+      <div class="modal-header flex justify-between align-middle">
+        <div class="p-4 grow flex
+          {%  if block.settings.header_position == 'left' %}
+            justify-start
+          {% elsif block.settings.header_position == 'center' %}
+            justify-center
+          {% endif %}
+          ">
+          <h2 class="modal-title" style="color: {{ block.settings.header_color }};">
+            {% if block.settings.header_copy %}{{ block.settings.header_copy }}{% endif %}
+          </h2>
+        </div>
+        <button modal-close class="cursor-pointer pr-4 md:pr-8" aria-label="Close Modal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#989898" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body p-4 flex flex-col items-center flex-grow justify-center" style="color: {{ block.settings.body_color }};">
+        {% if block.settings.body_copy %}
+          <div class="m-4 p-4">{{ block.settings.body_copy }}</div>
+        {% endif %}
+
+        {% comment %} CONDITIONAL CONTENT {% endcomment %}
+        {% case block.settings.select_type %}
+          {% when 'promo' %}
+            {% comment %} {%  render 'promotion' %} {% endcomment %}
+          {% when 'newsletter' %}
+            <form>
+              <input type="email" placeholder="Email Address">
+              <button type="submit">Subscribe</button>
+            </form>
+            {% comment %} {%  render 'newsletter' %} {% endcomment %}
+          {% when 'back-in-stock' %}
+            {% comment %} {%  render 'back-in-stock' %} {% endcomment %}
+        {% endcase %}
+        {% comment %} END CONDITIONAL CONTENT {% endcomment %}
+
+        {%  if block.settings.cta_url %}
+          <a 
+            href="{{ block.settings.cta_url }}" 
+            class="border-2 border-solid rounded p-4 py-4 px-4 hover:invert" 
+            style="
+              background-color: {{ block.settings.cta_color }};
+              color: {{ block.settings.cta_text_color }};
+              border-color: {{ block.settings.cta_color }};
+            ">
+            {% if block.settings.cta_copy %}
+              <span class="font-karla font-semibold">{{ block.settings.cta_copy }}</span>
+            {% endif %}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay fixed top-0 left-0 w-screen h-screen z-10 opacity-25 bg-black hidden"></div>
+  </base-modal>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Modals",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "modal",
+      "name": "Modal",
+      "settings": [
+        {
+          "type": "select",
+          "id": "select_type",
+          "label": "Select Type",
+          "options": [
+            { "value": "promo", "label": "Promo" },
+            { "value": "newsletter", "label": "Newsletter" },
+            { "value": "back-in-stock", "label": "Back In Stock" }
+          ],
+          "default": "promo"
+        },
+        {
+            "type": "header",
+            "content": "Promotion Settings"
+        },
+        {
+          "type": "text",
+          "id": "promo_key",
+          "label": "Connection Promotion with Key",
+        },
+        {
+          "type": "text",
+          "id": "location_type",
+          "label": "Location Type",
+          "default": "###",
+          "info": "Enter the URL, pathname, or UTM parameter depending on the selected location type."
+        },
+        {
+          "type": "header",
+          "content": "Modal Settings"
+        },
+        {
+          "type": "select",
+          "id": "modal_size",
+          "label": "Modal Size",
+          "options": [
+            { "value": "regular", "label": "Regular" },
+            { "value": "fullscreen", "label": "Fullscreen" }
+          ],
+          "default": "regular"
+        },
+        {
+          "type": "text",
+          "id": "header_copy",
+          "label": "Header Copy",
+        },
+        {
+          "type": "select",
+          "id": "header_position",
+          "label": "Header Position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" }
+          ],
+        },
+        {
+          "type": "richtext",
+          "id": "body_copy",
+          "label": "Body Copy",
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "header_color",
+          "label": "Header Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "body_color",
+          "label": "Body Color",
+          "default": "#000000"
+        },
+        {
+          "type": "text",
+          "id": "cta_copy",
+          "label": "CTA Copy",
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "CTA URL",
+        },
+        {
+          "type": "color",
+          "id": "cta_color",
+          "label": "CTA Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "cta_text_color",
+          "label": "CTA Text Color",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Modals",
+      "blocks": [
+        {
+          "type": "modal"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

@@ -34,7 +34,10 @@ module.exports = {
         'coffee': '#6F4E37',
         'latte': '#D3AE70',
         'vintage-clay': '#B66A50'
-      }
+      },
+      fontFamily: {
+        karla: ['Karla', 'sans-serif'],
+      },
     }
   },
   safelist: [

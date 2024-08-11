@@ -1,22 +1,22 @@
 
 <script>
-  const promotions = [];
+  const promotions = [
 
-  {% for block in section.blocks %}
-    {% if block.type == 'promotion' %}
-      let promotion = {
-        key: "{{ block.settings.key | escape }}",
-        title: "{{ block.settings.title | escape }}",
-        message: "{{ block.settings.message | escape }}",
-        utm_medium: "{{ block.settings.utm_medium | escape }}",
-        discountCode: "{{ block.settings.discountCode | escape }}",
-        isActive: {{ block.settings.isActive }},
-        condition: "{{ block.settings.condition | escape }}"
-      };
-      promotions.push(promotion);
-    {% endif %}
-  {% endfor %}
+    {% for block in section.blocks %}
+      {% if block.type == 'promotion' %}
+        {
+          key: "{{ block.settings.key | escape }}",
+          title: "{{ block.settings.title | escape }}",
+          message: "{{ block.settings.message | escape }}",
+          utm_medium: "{{ block.settings.utm_medium | escape }}",
+          discountCode: "{{ block.settings.discountCode | escape }}",
+          isActive: {{ block.settings.isActive }},
+          condition: "{{ block.settings.condition | escape }}"
+        }{% unless forloop.last %},{% endunless %}
+      {% endif %}
+    {% endfor %}
 
+  ];
   localStorage.setItem('promotions', JSON.stringify(promotions));
   window.promotions = promotions; // just for testing
 </script>
