@@ -51,7 +51,6 @@ class Carousel extends HTMLElement {
 
 class Collection {
   constructor() {
-    console.log('collection script loaded');
     this.init();
   }
 

@@ -12,7 +12,8 @@
     "shopify:pull": "shopify theme pull",
     "vite:dev": "echo 'running vite' && vite",
     "vite:build": "vite build",
-    "pull": "npm run shopify:pull -- --only=templates config/settings_data.json"
+    "pull": "npm run shopify:pull -- --only=templates config/settings_data.json",
+    "server": "node server/index.js"
   },
   "author": "",
   "license": "ISC",

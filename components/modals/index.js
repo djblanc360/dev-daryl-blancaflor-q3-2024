@@ -23,6 +23,13 @@ class Modal extends HTMLElement {
     this.modal.style.display = 'none';
     this.overlay.style.display = 'none';
     // send dismiss event to customer object
+    const { select_type } = this.settings;
+    if (select_type === 'promo') {
+      window.dispatchEvent(new CustomEvent('Promotions:dismissed', { 
+        bubbles: true,
+        detail:this.settings.promo_key
+      }));
+    }
   }
 
   handleOpen() {
@@ -59,9 +66,6 @@ class Modal extends HTMLElement {
     const promotion = promotions.find((promo) => promo.key === this.settings.promo_key);
     console.log('promotion', promotion);
 
-
-
-
     const checkUTMparams = (utm) => {
       if (promotion.utm_medium) console.log('utm_medium', utm);
       let params = new URLSearchParams(window.location.search);
@@ -83,29 +87,34 @@ class Modal extends HTMLElement {
 
     const validDiscount = promotion.discount ? checkDiscount(promotion.discount) : true;
 
-
-
     const isPromoLocation = validUTMparams && validDiscount;
     console.log('isPromoLocation', isPromoLocation);
 
+    const checkCondition = (condition) => {
+      console.log('condition', condition);
+      const meetsCondition = eval(String(condition));
+      console.log('meetsCondition', meetsCondition);
+      return meetsCondition;
+    }
 
-
-    const condition = promotion.condition ? new String(promotion.condition) : '';
-    console.log('condition', condition);
-    const meetsCondition = eval(String(condition));
-    console.log('meetsCondition', meetsCondition);
+    const validCondition = promotion.condition ? checkCondition(promotion.condition) : true;
 
     const isActive = promotion.isActive;
     console.log('isActive', isActive);
 
     if (!isActive) return false;
 
-    if (isPromoLocation || meetsCondition) {
+    if (isPromoLocation && validCondition) {
+      // send seen event to customer object
+      window.dispatchEvent(new CustomEvent('Promotions:seen', { 
+        bubbles: true,
+        detail:promotion 
+      }));
       console.log('show promotion');
     }
     // if customer dismissed modal 
 
-    return isPromoLocation || meetsCondition
+    return isPromoLocation && validCondition
   }
 }
 
