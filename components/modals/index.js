@@ -117,5 +117,6 @@ class Modal extends HTMLElement {
     return isPromoLocation && validCondition
   }
 }
-
-customElements.define('base-modal', Modal);
+window.addEventListener('DOMContentLoaded', e => {
+  customElements.define('base-modal', Modal); // ensures it runs after Customer
+});
