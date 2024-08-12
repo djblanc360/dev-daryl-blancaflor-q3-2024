@@ -10,13 +10,26 @@ const Customer = {
     init: (customer) => {
         Customer.promotionHistory.init(customer);
         Customer.ipTracking.init(); // server must be running
-        window.customer = customer;
     },
 
     // for testing new customer
-    clear: () => {
-        localStorage.removeItem('customer');
-        window.customer = {};
+    // can remove sub-objects by passing in key
+    // example: Customer.clear('ipTracking');
+    clear: (obj) => {
+        console.log('clear obj', obj);
+        const customer = Customer.get();
+        if (!obj) customer = {};
+        console.log('clear customer', customer);
+
+        for (const key in customer) {
+            if (key === obj) {
+                delete customer[key];
+                break;
+            }
+        }
+        console.log('clear customer', customer);
+        Customer.save(customer);
+        window.customer = customer;
     },
 
     get: () => {
@@ -87,7 +100,7 @@ const Customer = {
             }
         },
 
-        // utility refactor
+        // utility refactor or do websocket in server/
         // https://morioh.com/a/2e1c6c90f85a/how-to-turn-settimeout-and-setinterval-into-promises
         polling: async (callback, ms, attempts) => {
             return new Promise(async (resolve, reject) => {
@@ -122,7 +135,7 @@ const Customer = {
                 promo.key,
                 {
                     promo: promo,
-                    seen: 0,
+                    seen: 1,
                     seenAt: null,
                     dismissed: 0,
                     dismissedAt: null,
@@ -133,10 +146,17 @@ const Customer = {
 
         handleSeenPromotion: (promo) => {
             const customer = Customer.get();
-            
-            if (customer.promotionHistory.size == 0) Customer.promotionHistory.addPromotion(customer, promo);
 
-            if (!customer.promotionHistory.has(promo.key)) Customer.promotionHistory.addPromotion(customer, promo);
+            if (customer.promotionHistory.size == 0) {
+                Customer.promotionHistory.addPromotion(customer, promo);
+                return;
+            }
+            
+
+            if (!customer.promotionHistory.has(promo.key)) {
+                Customer.promotionHistory.addPromotion(customer, promo);
+                return;
+            }
 
             let obj = customer.promotionHistory.get(promo.key);
             obj.seenAt = new Date();
@@ -158,18 +178,23 @@ const Customer = {
     },
 
     save: (customer) => {
+        window.customer = customer; // run first to keep promoHistory as map
+
+        if (!customer.promotionHistory) customer.promotionHistory = new Map();
+
         const customerSave = {
             ...customer,
             promotionHistory: Array.from(customer.promotionHistory.entries()),
         };
-
+        
         localStorage.setItem('customer', JSON.stringify(customerSave));
-        window.customer = customerSave;
+        // window.customer = customerSave;
     },
 
 
 }
 
+export default Customer;
 window.Customer = Customer;
 
 

@@ -46,7 +46,6 @@ class Modal extends HTMLElement {
     }
 
     const { select_type } = this.settings;
-    console.log('selectType', select_type);
     switch (select_type) {
       case 'promo':
         if (this.validatePromotion()) this.handleOpen();
@@ -60,9 +59,11 @@ class Modal extends HTMLElement {
     }
   }
 
+  customerRequirements() {
+  }
+
   validatePromotion() {
     const promotions = JSON.parse(localStorage.getItem('promotions'));
-    console.log('promotions', promotions);
     const promotion = promotions.find((promo) => promo.key === this.settings.promo_key);
     console.log('promotion', promotion);
 
@@ -77,22 +78,25 @@ class Modal extends HTMLElement {
     const validUTMparams = promotion.utm_medium ? checkUTMparams(promotion.utm_medium) : true;
 
     const checkDiscount = (discount) => {
+      console.log('checkDiscount - discount', discount);
       let substr = 'discount_code';
       let cookies = document.cookie.split("; ");
       let discountCode = cookies.find(cookie => cookie.startsWith(substr));
       let value = discountCode ? discountCode.split('=')[1] : null;
-      console.log('discountCode', discountCode);
+      console.log('checkDiscount - discountCode', discountCode, value === discount);
       return value === discount;
     }
 
-    const validDiscount = promotion.discount ? checkDiscount(promotion.discount) : true;
+
+    const validDiscount = promotion.discountCode ? checkDiscount(promotion.discountCode) : true;
 
     const isPromoLocation = validUTMparams && validDiscount;
     console.log('isPromoLocation', isPromoLocation);
 
     const checkCondition = (condition) => {
       console.log('condition', condition);
-      const meetsCondition = eval(String(condition));
+      // const meetsCondition = eval(String(condition));
+      const meetsCondition = new Function(`return (${condition})`)();
       console.log('meetsCondition', meetsCondition);
       return meetsCondition;
     }

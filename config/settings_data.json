@@ -15,30 +15,82 @@
             "type": "promotion",
             "settings": {
               "key": "welcome_utm",
-              "title": "Welcome",
+              "title": "Welcome UTM",
               "message": "welcome message",
-              "utm_medium": "",
+              "utm_medium": "welcome",
               "discountCode": "",
               "isActive": true,
               "condition": ""
             }
           },
+          "promotion_VNEVpQ": {
+            "type": "promotion",
+            "settings": {
+              "key": "welcome_discount",
+              "title": "Welcome Discount",
+              "message": "will run on either utm or discount",
+              "utm_medium": "welcome",
+              "discountCode": "WELCOME",
+              "isActive": true,
+              "condition": ""
+            }
+          },
+          "promotion_rLmFyD": {
+            "type": "promotion",
+            "settings": {
+              "key": "dismissed_3x",
+              "title": "Pls Don't Go",
+              "message": "Dismissed \"Welcome\" Promo 3 Times",
+              "utm_medium": "welcome",
+              "discountCode": "",
+              "isActive": true,
+              "condition": "customer.promotionHistory.has('welcome_utm') ?\n\t(customer.promotionHistory.get('welcome_utm')).dismissed > 3\n    : false"
+            }
+          },
           "promotion_JEf3ER": {
             "type": "promotion",
             "settings": {
-              "key": "deal10",
-              "title": "Deal 10",
+              "key": "deal10_utm",
+              "title": "Deal 10 UTM",
               "message": "Promotion message",
-              "utm_medium": "",
+              "utm_medium": "deal10",
               "discountCode": "",
               "isActive": true,
               "condition": ""
+            }
+          },
+          "promotion_pxpUyC": {
+            "type": "promotion",
+            "settings": {
+              "key": "deal10_discount",
+              "title": "Deal 10 Discount",
+              "message": "Promotion message",
+              "utm_medium": "deal10",
+              "discountCode": "DEAL10",
+              "isActive": true,
+              "condition": ""
+            }
+          },
+          "promotion_kMLLAh": {
+            "type": "promotion",
+            "settings": {
+              "key": "no_deal_usa",
+              "title": "No Deal USA",
+              "message": "Promotion message",
+              "utm_medium": "deal10",
+              "discountCode": "DEAL10",
+              "isActive": true,
+              "condition": "customer?.ipTracking.countryCode === 'US'"
             }
           }
         },
         "block_order": [
           "promotion_K9VAz9",
-          "promotion_JEf3ER"
+          "promotion_VNEVpQ",
+          "promotion_rLmFyD",
+          "promotion_JEf3ER",
+          "promotion_pxpUyC",
+          "promotion_kMLLAh"
         ],
         "settings": {
         }
@@ -48,6 +100,7 @@
         "blocks": {
           "modal_hkwajT": {
             "type": "modal",
+            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "welcome_utm",
@@ -65,11 +118,52 @@
               "cta_text_color": "#ffffff"
             }
           },
-          "modal_kiUGj6": {
+          "modal_cdMQmi": {
             "type": "modal",
+            "disabled": true,
             "settings": {
               "select_type": "promo",
-              "promo_key": "deal10",
+              "promo_key": "welcome_discount",
+              "location_type": "",
+              "modal_size": "regular",
+              "header_copy": "",
+              "header_position": "left",
+              "body_copy": "",
+              "background_color": "#ffffff",
+              "header_color": "#000000",
+              "body_color": "#000000",
+              "cta_copy": "",
+              "cta_url": "",
+              "cta_color": "#000000",
+              "cta_text_color": "#ffffff"
+            }
+          },
+          "modal_WPUGMA": {
+            "type": "modal",
+            "disabled": true,
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "dismissed_3x",
+              "location_type": "products\/womens-fairway-quarter-zip",
+              "modal_size": "regular",
+              "header_copy": "Pls Don't Go",
+              "header_position": "left",
+              "body_copy": "<p>:(<\/p>",
+              "background_color": "#25293b",
+              "header_color": "#ffffff",
+              "body_color": "#ffffff",
+              "cta_copy": "Look At This",
+              "cta_url": "shopify:\/\/products\/coastal-trucker-jacket",
+              "cta_color": "#000000",
+              "cta_text_color": "#ffffff"
+            }
+          },
+          "modal_kiUGj6": {
+            "type": "modal",
+            "disabled": true,
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "deal10_utm",
               "location_type": "",
               "modal_size": "fullscreen",
               "header_copy": "BYLT Basics",
@@ -83,12 +177,61 @@
               "cta_color": "#25293b",
               "cta_text_color": "#ffffff"
             }
+          },
+          "modal_kc4gF7": {
+            "type": "modal",
+            "disabled": true,
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "deal10_discount",
+              "location_type": "###",
+              "modal_size": "regular",
+              "header_copy": "",
+              "header_position": "left",
+              "body_copy": "",
+              "background_color": "#ffffff",
+              "header_color": "#000000",
+              "body_color": "#000000",
+              "cta_copy": "",
+              "cta_url": "",
+              "cta_color": "#000000",
+              "cta_text_color": "#ffffff"
+            }
+          },
+          "modal_PkaKdD": {
+            "type": "modal",
+            "settings": {
+              "select_type": "promo",
+              "promo_key": "no_deal_usa",
+              "location_type": "\/collections",
+              "modal_size": "fullscreen",
+              "header_copy": "",
+              "header_position": "left",
+              "body_copy": "",
+              "background_color": "#d93a3a",
+              "header_color": "#ffffff",
+              "body_color": "#ffffff",
+              "cta_copy": "",
+              "cta_url": "",
+              "cta_color": "#000000",
+              "cta_text_color": "#ffffff",
+              "seenCount": 3
+            }
           }
         },
         "block_order": [
           "modal_hkwajT",
-          "modal_kiUGj6"
+          "modal_cdMQmi",
+          "modal_WPUGMA",
+          "modal_kiUGj6",
+          "modal_kc4gF7",
+          "modal_PkaKdD"
         ],
+        "settings": {
+        }
+      },
+      "customer": {
+        "type": "customer",
         "settings": {
         }
       }

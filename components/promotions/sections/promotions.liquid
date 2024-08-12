@@ -11,10 +11,12 @@
           utm_medium: "{{ block.settings.utm_medium | escape }}",
           discountCode: "{{ block.settings.discountCode | escape }}",
           isActive: {{ block.settings.isActive }},
-          condition: "{{ block.settings.condition | escape }}"
+          condition: "{{ block.settings.condition | strip_newlines  }}"
         }{% unless forloop.last %},{% endunless %}
       {% endif %}
     {% endfor %}
+
+    {% comment %} condition: "{{ block.settings.condition | escape }}" {% endcomment %}
 
   ];
   localStorage.setItem('promotions', JSON.stringify(promotions));
@@ -65,7 +67,7 @@
           "default": true
         },
         {
-          "type": "text",
+          "type": "liquid",
           "id": "condition",
           "label": "Condition",
           "info": "Example: 'cart.total > 1000'"
