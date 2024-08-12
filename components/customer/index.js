@@ -9,17 +9,15 @@ const Customer = {
 
     init: (customer) => {
         Customer.promotionHistory.init(customer);
-        Customer.ipTracking.init(); // server must be running
+        Customer.ipTracking.init(); // server must be running, condition with schema
     },
 
     // for testing new customer
     // can remove sub-objects by passing in key
     // example: Customer.clear('ipTracking');
     clear: (obj) => {
-        console.log('clear obj', obj);
         const customer = Customer.get();
         if (!obj) customer = {};
-        console.log('clear customer', customer);
 
         for (const key in customer) {
             if (key === obj) {
@@ -27,7 +25,6 @@ const Customer = {
                 break;
             }
         }
-        console.log('clear customer', customer);
         Customer.save(customer);
         window.customer = customer;
     },
@@ -40,6 +37,7 @@ const Customer = {
         return customer;
     },
 
+    // refactor to /integrations/ipTracking
     ipTracking: {
         init: async () =>{
             const customer = Customer.get();

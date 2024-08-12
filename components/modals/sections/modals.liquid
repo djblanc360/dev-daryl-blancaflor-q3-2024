@@ -13,7 +13,14 @@
       top-0 left-0 h-screen w-screen
     {% endif %}
     "
-    style="background-color: {{ block.settings.background_color }};"
+    style="
+    {% if block.settings.background_image %}
+      background-image: url({{ block.settings.background_image | img_url: 'master' }});
+      background-size: cover;
+      background-position: center;
+    {% endif %}
+    background-color: {{ block.settings.background_color }};
+    "
   >
     <div class="modal-content h-full flex flex-col">
       <div class="modal-header flex justify-between align-middle">
@@ -32,9 +39,15 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#989898" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
-      <div class="modal-body p-4 flex flex-col items-center flex-grow justify-center" style="color: {{ block.settings.body_color }};">
+      <div class="modal-body max-h-[50%] m-auto p-4 flex flex-col items-center flex-grow justify-center" 
+          style="
+            color: {{ block.settings.body_color }};
+            {% if block.settings.modal_body_background %}
+              background-color: {{ block.settings.modal_body_background }};
+            {% endif %}
+          ">
         {% if block.settings.body_copy %}
-          <div class="m-4 p-4">{{ block.settings.body_copy }}</div>
+          <div class="m-4 p-4 text-center">{{ block.settings.body_copy }}</div>
         {% endif %}
 
         {% comment %} CONDITIONAL CONTENT {% endcomment %}
@@ -66,6 +79,7 @@
             {% endif %}
           </a>
         {% endif %}
+        
       </div>
     </div>
   </div>
@@ -144,6 +158,11 @@
           "label": "Body Copy",
         },
         {
+          "type":"image_picker",
+          "id": "background_image",
+          "label": "Background Image",
+        },
+        {
           "type": "color",
           "id": "background_color",
           "label": "Background Color",
@@ -161,6 +180,12 @@
           "label": "Body Color",
           "default": "#000000"
         },
+        {
+          "type": "color_background",
+          "id": "modal_body_background",
+          "label": "Content Background",
+          "info": "black 50%: rgba(0, 0, 0, 0.5), white 50%: rgba(255, 255, 255, 0.5)"
+        },        
         {
           "type": "text",
           "id": "cta_copy",

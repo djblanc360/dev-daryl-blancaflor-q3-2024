@@ -86,17 +86,17 @@ class MediaGallery extends HTMLElement {
 
 class Product {
   constructor() {
-    console.log('in Product', window.product);
+    // console.log('in Product', window.product);
     this.initializeWebComponents();
     window.addEventListener('variantChange', this.updateProductState)
   }
 
   connectedCallback() {
-    console.log('in Product connectedCallback');
+    // console.log('in Product connectedCallback');
   }
 
   updateProductState(event) {
-    console.log('in updateProductState', event.detail);
+    // console.log('in updateProductState', event.detail);
   }
 
   initializeWebComponents() {

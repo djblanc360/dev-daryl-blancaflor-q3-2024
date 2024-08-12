@@ -10,3 +10,5 @@ import '../../assets/product.js';
 import '../../assets/promotions.js';
 import '../../assets/modals.js';
 
+
+import '../../assets/modals_promotions.js';
