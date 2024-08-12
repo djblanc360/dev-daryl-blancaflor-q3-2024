@@ -1,3 +1,4 @@
+
 class Modal extends HTMLElement {
   constructor() {
     super();
@@ -45,6 +46,7 @@ class Modal extends HTMLElement {
       return;
     }
 
+
     const { select_type } = this.settings;
     switch (select_type) {
       case 'promo':
@@ -59,13 +61,31 @@ class Modal extends HTMLElement {
     }
   }
 
-  customerRequirements() {
+  customerRequirements(promotion) {
+    const customer = Customer.get();
+
+    if (!this.settings.seenCount && !this.settings.dismissedCount) return true;
+
+    const promotionHistory = customer.promotionHistory.get(promotion.key);
+
+    if (!promotionHistory) return true;
+
+    if (this.settings.seenCount && promotionHistory.seen >= this.settings.seenCount) return false;
+    
+    if (this.settings.dismissedCount && promotionHistory.dismissed >= this.settings.dismissedCount) return false;
+
+    return true;
   }
 
   validatePromotion() {
     const promotions = JSON.parse(localStorage.getItem('promotions'));
     const promotion = promotions.find((promo) => promo.key === this.settings.promo_key);
     console.log('promotion', promotion);
+
+    // modal requirements, refactor after newsletter and back_in_stock
+    const validCustomer = this.customerRequirements(promotion);
+    console.log('validCustomer', validCustomer);
+    if (!validCustomer) return false;
 
     const checkUTMparams = (utm) => {
       if (promotion.utm_medium) console.log('utm_medium', utm);

@@ -100,11 +100,10 @@
         "blocks": {
           "modal_hkwajT": {
             "type": "modal",
-            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "welcome_utm",
-              "location_type": "",
+              "location_type": "products\/",
               "modal_size": "regular",
               "header_copy": "Welcome",
               "header_position": "left",
@@ -115,7 +114,8 @@
               "cta_copy": "",
               "cta_url": "",
               "cta_color": "#000000",
-              "cta_text_color": "#ffffff"
+              "cta_text_color": "#ffffff",
+              "dismissedCount": 1
             }
           },
           "modal_cdMQmi": {
@@ -200,6 +200,7 @@
           },
           "modal_PkaKdD": {
             "type": "modal",
+            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "no_deal_usa",
