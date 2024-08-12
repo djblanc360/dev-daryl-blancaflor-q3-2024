@@ -95,7 +95,7 @@ class Modal extends HTMLElement {
       return utm === utmMedium;
     }
 
-    const validUTMparams = promotion.utm_medium ? checkUTMparams(promotion.utm_medium) : true;
+    const validUTMparams = promotion.utm_medium ? checkUTMparams(promotion.utm_medium) : false;
 
     const checkDiscount = (discount) => {
       console.log('checkDiscount - discount', discount);
@@ -108,10 +108,10 @@ class Modal extends HTMLElement {
     }
 
 
-    const validDiscount = promotion.discountCode ? checkDiscount(promotion.discountCode) : true;
+    const validDiscount = promotion.discountCode ? checkDiscount(promotion.discountCode) : false;
 
-    const isPromoLocation = validUTMparams && validDiscount;
-    console.log('isPromoLocation', isPromoLocation);
+    const isPromoLocation = validUTMparams || validDiscount;
+    console.log(`isPromoLocation - validUTMparams: ${validUTMparams} || validDiscount: ${validDiscount} = ${isPromoLocation}`);
 
     const checkCondition = (condition) => {
       console.log('condition', condition);
