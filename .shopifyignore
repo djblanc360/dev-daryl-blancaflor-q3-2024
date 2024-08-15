@@ -17,3 +17,5 @@ node_modules
 .github/
 components/
 server/
+utilities/
+integrations/

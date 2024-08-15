@@ -103,9 +103,9 @@
             "settings": {
               "select_type": "promo",
               "promo_key": "welcome_utm",
-              "location_type": "products\/",
+              "location_type": "",
               "modal_size": "regular",
-              "header_copy": "Welcome",
+              "header_copy": "Welcome UTM",
               "header_position": "left",
               "body_copy": "<p>this is the welcome body<\/p>",
               "background_color": "#25293b",
@@ -121,13 +121,12 @@
           },
           "modal_cdMQmi": {
             "type": "modal",
-            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "welcome_discount",
               "location_type": "",
               "modal_size": "regular",
-              "header_copy": "",
+              "header_copy": "Welcome Discount",
               "header_position": "left",
               "body_copy": "",
               "background_color": "#ffffff",
@@ -142,7 +141,6 @@
           },
           "modal_WPUGMA": {
             "type": "modal",
-            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "dismissed_3x",
@@ -163,7 +161,6 @@
           },
           "modal_kiUGj6": {
             "type": "modal",
-            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "deal10_utm",
@@ -205,13 +202,12 @@
           },
           "modal_PkaKdD": {
             "type": "modal",
-            "disabled": true,
             "settings": {
               "select_type": "promo",
               "promo_key": "no_deal_usa",
               "location_type": "\/collections",
-              "modal_size": "fullscreen",
-              "header_copy": "",
+              "modal_size": "regular",
+              "header_copy": "No Deal USA",
               "header_position": "left",
               "body_copy": "",
               "background_color": "#d93a3a",

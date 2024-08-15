@@ -1,4 +1,5 @@
 import 'vite/modulepreload-polyfill'
+import Utils from '../../assets/utils.js';
 
 import '../../assets/customer.js';
 

@@ -1,3 +1,5 @@
+import Utils from './utils.js';
+
 // functionality for customer to be used in admin settings
 const POLLING_DELAY = {
     MIN: 5000, // 5 seconds
@@ -24,7 +26,7 @@ const Customer = {
                 delete customer[key];
                 break;
             }
-        }
+        }  
         Customer.save(customer);
         window.customer = customer;
     },
@@ -43,15 +45,18 @@ const Customer = {
             const customer = Customer.get();
 
             try {
-                await Customer.ipTracking.polling(async () => {
+                await Utils.api.polling(async () => {
                     // if server directory is running
                     const active = await Customer.ipTracking.isServerActive()
-                    if (!customer.ipTracking && active) {
+
+                    if (customer.ipTracking) return true;
+                    if (active) {
                         await Customer.ipTracking.getIp(customer);
                         console.log('ipTracking initialized');
                     } else {
-                        // console.log('ipTracking not initialized');
+                        console.log('ipTracking not initialized');
                     }
+                    return false;
                 }, POLLING_DELAY.MIN, POLLING_ATTEMPTS);
             } catch (error) {
                 console.error(`Failed to initialize ipTracking after ${POLLING_ATTEMPTS}: ${error}`);
@@ -98,26 +103,6 @@ const Customer = {
             }
         },
 
-        // utility refactor or do websocket in server/
-        // https://morioh.com/a/2e1c6c90f85a/how-to-turn-settimeout-and-setinterval-into-promises
-        polling: async (callback, ms, attempts) => {
-            return new Promise(async (resolve, reject) => {
-                const interval = setInterval(async () => {
-                    if (await callback()) {
-                        resolve();
-                        clearInterval(interval);
-                    } else if (attempts <= 1) {
-                        reject('Max attempts reached');
-                        clearInterval(interval);
-                    }
-                    attempts -= 1;
-                }, ms);
-            });
-        },
-
-        sleep: async (ms) => { // utility refactor
-            return new Promise(resolve => setTimeout(resolve, ms));
-        },
     },
 
     promotionHistory: {
