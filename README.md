@@ -20,6 +20,29 @@ should create a `header.js` file in `assets/` then reference any changes from th
 `nav.js` file in `components/header/nav.js` while running `npm run dev`
 should create a `header_nav.js` file in `assets/` then reference any changes from the `components/header/nav.js` file.
 
+## Symlink Build Feature
+- symbolic link reversal on `npm run reverse-symlinks` when its time to build to a store such as on `shopify theme share`.
+
+### Example Development to Production Process
+1.
+run `npm run dev`
+- original file `components/sections/product.liquid` creates a symbolic link to `sections/product.liquid`
+- when pushing to github ,`components/sections/product.liquid` has the code and `sections/product.liquid` has the reference to `components/sections/product.liquid`
+
+2.
+terminate `npm run dev`
+- when viewing on shopify store, will just see a string local file reference to `components/sections/product.liquid`
+
+3.
+on `npm run build` or `shopify theme share`
+- run `reverse-symlinks.js`
+- so now `sections/product.liquid` has the code and `components/sections/product.liquid` has the reference to `sections/product.liquid`
+- when viewing on shopify store, should see actual content of `product.liquid`
+
+4.
+if need to make changes, run `npm run dev`
+- when viewing `components/sections/product.liquid`, it should have the code to make changes
+
 ## Promotions Feature
 - Organized into global section, each block is a promotion.
 - All promotions are stored in the window for use in admin schema settings that accept JavaScript expressions.
@@ -50,6 +73,10 @@ customer.ipTracking.countryCode !== 'US'
 - The customer contains the history of promotions viewed and therefore listens to user interactions with modals.
 - The customer object receives third-party integration data to enrich the customer profile and allow for more logic with promotions and modals.
 - The third-party service currently integrated is for tracking the user's ip for location-based modal logic.
+
+## Utilities Feature
+- Created a `utilities/` directory where `symlinks.js` will use supporting plugin from `bundler.js` to bundle each file in the folder to a single `utils.js` file in `assets/` directory.
+- Changes in the `utilities/` directory will update the `utils.js`.
 
 ## Added Dependencies
 
