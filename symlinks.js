@@ -1,9 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import chokidar from 'chokidar'; // https://www.npmjs.com/package/chokidar
+import chokidar from 'chokidar';
 
-// my custom bundler, yeah I know I could've just used terser
 import { bundler } from './bundler.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,7 +19,29 @@ const utilsDir = path.join(__dirname, 'utilities');
 const mainJsPath = path.join(__dirname, 'frontend', 'entrypoints', 'main.js');
 const utilsJsPath = path.join(assetsDir, 'utils.js');
 
-const symlinkedPaths = new Set();
+const symlinkedPaths = new Map();
+
+/**
+ * Checks if the path is a symbolic link pointing to the correct target.
+ * @typedef {import('fs').PathLike} PathLike
+ * @param {PathLike} destPath
+ * @param {PathLike} srcPath
+ * @returns {Promise<boolean>} Returns true if the path is a symlink pointing to srcPath.
+ */
+async function hasSymlink(destPath, srcPath) {
+  try {
+    const stats = await fs.lstat(destPath);
+    if (stats.isSymbolicLink()) {
+      const linkTarget = await fs.readlink(destPath);
+      terminalLogs("Symlink exists from {0} to {1}", srcPath, destPath);
+      return linkTarget === srcPath;
+    }
+    return false;
+  } catch (err) {
+    // If the path does not exist, it's not a symlink
+    return false;
+  }
+}
 
 /**
  * Creates a symlink from srcPath to destPath
@@ -31,10 +52,11 @@ const symlinkedPaths = new Set();
 async function createSymlink(srcPath, destPath) {
   try {
     await fs.symlink(srcPath, destPath, 'file');
-    symlinkedPaths.add(destPath);
-    console.log(`Symlink created: ${destPath} -> ${srcPath}`);
+    symlinkedPaths.set(destPath);
+
+    terminalLogs("Symlink created: {0} -> {1}", srcPath, destPath);
   } catch (err) {
-    console.error(`Error creating symlink for ${srcPath} -> ${destPath}:`, err);
+    terminalLogs("Error creating symlink for: {0} -> {1}", srcPath, destPath, err);
   }
 }
 
@@ -48,11 +70,29 @@ async function removeSymlink(destPath) {
     await fs.access(destPath);
     await fs.unlink(destPath);
     symlinkedPaths.delete(destPath);
-    console.log(`Removed symlink or file: ${destPath}`);
+
+    terminalLogs("remove symlink at: '{0}';", destPath);
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.error(`Error removing symlink or file at ${destPath}:`, err);
+        terminalLogs("Error removing symlink or file at {0}: {1}", destPath, err);
     }
+  }
+}
+
+/**
+ * Moves srcPath to destPath
+ * destPath: source
+ * srcPath: reference to destPath
+ * @param {PathLike} srcPath
+ * @param {PathLike} destPath
+ */
+async function reverseSourceDestination(srcPath, destPath) {
+  try {
+    await fs.rename(srcPath, destPath);
+    symlinkedPaths.set(destPath, srcPath);
+    terminalLogs("Moved source: {0} -> {1}", srcPath, destPath);
+  } catch (err) {
+    terminalLogs("Error processing {0} -> {1}: {2}", srcPath, destPath, err.message);
   }
 }
 
@@ -66,10 +106,10 @@ async function updateEntryJs(entryPath, importPath) {
     const content = await fs.readFile(entryPath, 'utf8');
     if (!content.includes(importPath)) {
       await fs.appendFile(entryPath, `\nimport '${importPath}';`);
-      console.log(`main.js updated with: import '${importPath}';`);
+      terminalLogs("main.js updated with: import '{0}';", importPath);
     }
   } catch (err) {
-    console.error(`Error updating main.js with ${importPath}:`, err);
+    terminalLogs("Error updating main.js with {0}: {1}", importPath, err.message)
   }
 }
 
@@ -85,10 +125,10 @@ async function removeFromEntryJs(entryPath, importPath) {
     if (content.includes(importStatement)) {
       content = content.replace(importStatement, '').trim();
       await fs.writeFile(entryPath, content);
-      console.log(`main.js updated: removed import '${importPath}';`);
+      terminalLogs("main.js updated: removed import '{0}';", importPath);
     }
   } catch (err) {
-    console.error(`Error removing import '${importPath}' from main.js:`, err);
+    terminalLogs("Error removing import '{0}' from main.js: {1}", importPath, err.message);
   }
 }
 
@@ -97,6 +137,7 @@ async function removeFromEntryJs(entryPath, importPath) {
  * @param {string} filePath
  */
 async function handleFileAddition(filePath) {
+    terminalLogs("handleFileAddition: {0}", filePath);
   const relativePath = path.relative(componentsDir, filePath);
   const pathParts = relativePath.split(path.sep);
   const component = pathParts[0];
@@ -104,7 +145,7 @@ async function handleFileAddition(filePath) {
   const fileName = pathParts[pathParts.length - 1];
 
   if (filePath.startsWith(utilsDir)) {
-    console.log(`Detected addition in utilities directory, bundling: ${filePath}`);
+    terminalLogs("Detected addition in utilities directory, bundling: {0}", filePath);
     await bundler();
     return;
   }
@@ -112,19 +153,21 @@ async function handleFileAddition(filePath) {
   if (type === 'sections' || type === 'snippets') {
     const destDir = type === 'sections' ? sectionsDir : snippetsDir;
     const destPath = path.join(destDir, fileName);
-    await createSymlink(filePath, destPath);
+    await handleSymlinking(filePath, destPath)
   } else if (fileName.endsWith('.js')) {
     const newFileName = fileName === 'index.js' ? `${component}.js` : `${component}_${fileName}`;
     const destPath = path.join(assetsDir, newFileName);
-    await createSymlink(filePath, destPath);
+    await handleSymlinking(filePath, destPath)
     await updateEntryJs(mainJsPath, `../../assets/${newFileName}`);
   }
 }
+
 /**
  * Handles file change
  * @param {string} filePath
  */
 async function handleFileChange(filePath) {
+    terminalLogs("handleFileChange: {0}", filePath);
   const relativePath = path.relative(componentsDir, filePath);
   const pathParts = relativePath.split(path.sep);
   const component = pathParts[0];
@@ -133,7 +176,7 @@ async function handleFileChange(filePath) {
 
   // Skip processing for utilities directory
   if (filePath.startsWith(utilsDir)) {
-    console.log(`Detected change in utilities directory, bundling: ${filePath}`);
+    terminalLogs("Detected addition in utilities directory, bundling: {0}", filePath);
     await bundler();
     return;
   }
@@ -141,32 +184,38 @@ async function handleFileChange(filePath) {
   if (type === 'sections' || type === 'snippets') {
     const destDir = type === 'sections' ? sectionsDir : snippetsDir;
     const destPath = path.join(destDir, fileName);
-    console.log(`updating ${type} file: ${destPath}`);
-    await removeSymlink(destPath);
-    await createSymlink(filePath, destPath);
+    if (!(await hasSymlink(destPath, filePath))) {
+      terminalLogs("Symlink invalid for {0}, recreating: {1} -> {2}", type, destPath, filePath);
+    //   await removeSymlink(destPath);
+    //   await createSymlink(destPath, filePath);
+    }
   } else if (fileName.endsWith('.js')) {
     const newFileName = fileName === 'index.js' ? `${component}.js` : `${component}_${fileName}`;
     const destPath = path.join(assetsDir, newFileName);
-    console.log(`updating ${type} file: ${destPath}`);
-    if (!symlinkedPaths.has(destPath)) {
-      await createSymlink(filePath, destPath);
+    if (!(await hasSymlink(destPath, newFileName))) {
+      terminalLogs("Symlink invalid for {0}, recreating: {1} -> {2}", type, destPath, newFileName);
+    //   await removeSymlink(destPath);
+    //   await createSymlink(destPath, newFileName);
     }
   }
 }
 
-/**
- * Handles file removal
- * @param {string} filePath
- */
+
+  /**
+   * Handles file removal
+   * @param {string} filePath
+   */
 async function handleFileRemoval(filePath) {
+    terminalLogs("handleFileRemoval: {0}", filePath);
   const relativePath = path.relative(componentsDir, filePath);
   const pathParts = relativePath.split(path.sep);
   const component = pathParts[0];
+  const type = pathParts[1];
   const fileName = pathParts[pathParts.length - 1];
 
   // Skip processing for utilities directory
   if (filePath.startsWith(utilsDir)) {
-    console.log(`Detected removal in utilities directory, bundling: ${filePath}`);
+    terminalLogs("Detected removal in utilities directory, bundling: {0}", filePath);
     await bundler();
     return;
   }
@@ -176,26 +225,30 @@ async function handleFileRemoval(filePath) {
     const importPath = `../../assets/${newFileName}`;
     const destPath = path.join(assetsDir, newFileName);
     await removeFromEntryJs(mainJsPath, importPath);
-    await removeSymlink(destPath);
+    await removeSymlink(filePath);
   } else if (type === 'sections' || type === 'snippets') {
     const destDir = type === 'sections' ? sectionsDir : snippetsDir;
     const destPath = path.join(destDir, fileName);
-    await removeSymlink(destPath);
+    await removeSymlink(filePath);
   }
+
 }
 
 /**
- * Watches for changes in the components directory
+ * Watches for changes in the listed directories
  */
-// const watchDir = [componentsDir, utilsDir, integrationsDir];
-const watchDir = [componentsDir, utilsDir]
-const watcher = chokidar.watch(watchDir, { persistent: true })
-watcher
-  .on('add', handleFileAddition)
-  .on('unlink', handleFileRemoval)
-  .on('error', error => console.error('Error watching files:', error));
-
+function watchForChanges() {
+    // const watchDir = [componentsDir, utilsDir, integrationsDir];
+    const watchDir = [componentsDir, utilsDir]
+    const watcher = chokidar.watch(watchDir, { persistent: true })
+    watcher
+    .on('add', handleFileAddition)
+    .on('change', debounce(handleFileChange,100))
+    .on('unlink', handleFileRemoval)
+    .on('error', error => console.error('Error watching files:', error));
+}
   //.on('change', debounce(handleFileChange,100))
+/*
   async function onChokidarChange() {
     return new Promise((resolve, reject) => {
   
@@ -219,17 +272,46 @@ watcher
   }).catch(error => {
     console.error(`Error onChokidarChange: ${error}`);
   });
+*/
 
 
 /**
- * Sets up the initial symlinks and file copies
+ * Handles the initial file movement and symlink creation
+ */
+async function handleSymlinking(srcPath, destPath) {
+    if (!symlinkedPaths.has(destPath)) {
+
+        if (await hasSymlink(srcPath, destPath)) { 
+            terminalLogs("Symlink already exists and is correct: {0} -> {1}", srcPath, destPath);
+            return;
+        }
+        // Track original source and destination
+        symlinkedPaths.set(destPath, srcPath);
+        
+        // Move original file
+        await reverseSourceDestination(srcPath, destPath);
+        // Retrieve original path
+        const componentsPath = symlinkedPaths.get(destPath);
+        
+        // Ensure removal of symlink in original path if it exists
+        if (await hasSymlink(destPath, componentsPath)) { // is destPath symbol link to origin componentsPath
+            await removeSymlink(destPath);
+        }
+        // Create a new symlink at destination path
+        await createSymlink(destPath, componentsPath);
+    }
+}
+
+/**
+ * Initial setup for symlink process
  */
 (async function initialSetup() {
   try {
+    console.log('initialSetup init')
     const components = await fs.readdir(componentsDir, { withFileTypes: true });
     await Promise.all(components.map(async (component) => {
       if (!component.isDirectory()) return;
-      
+
       const componentPath = path.join(componentsDir, component.name);
       const files = await fs.readdir(componentPath, { withFileTypes: true });
 
@@ -238,34 +320,54 @@ watcher
           const subFiles = await fs.readdir(path.join(componentPath, file.name));
           await Promise.all(subFiles.map(async (subFile) => {
             const srcPath = path.join(componentPath, file.name, subFile);
-            if (file.name === 'sections') {
-              const destPath = path.join(sectionsDir, subFile);
-              await removeSymlink(destPath);
-              await createSymlink(srcPath, destPath);
-            } else if (file.name === 'snippets') {
-              const destPath = path.join(snippetsDir, subFile);
-              await removeSymlink(destPath);
-              await createSymlink(srcPath, destPath);
-            }
+            const destPath = file.name === 'sections' 
+                ? path.join(sectionsDir, subFile) 
+                : path.join(snippetsDir, subFile);
+
+                await handleSymlinking(srcPath, destPath);
           }));
         } else if (file.name.endsWith('.js')) {
-          const srcPath = path.join(componentPath, file.name);
-          const newFileName = file.name === 'index.js' ? `${component.name}.js` : `${component.name}_${file.name}`;
-          const destPath = path.join(assetsDir, newFileName);
-          console.log('creating in /assets', `assets/${newFileName}`)
-          await removeSymlink(destPath);
-          await createSymlink(srcPath, destPath);
-          await updateEntryJs(mainJsPath, `../../assets/${newFileName}`);
+            const srcPath = path.join(componentPath, file.name);
+            const newFileName = file.name === 'index.js' ? `${component.name}.js` : `${component.name}_${file.name}`;
+            const destPath = path.join(assetsDir, newFileName);
+
+            await handleSymlinking(srcPath, destPath);
+            await updateEntryJs(mainJsPath, `../../assets/${newFileName}`);
         }
       }));
     }));
 
     await bundler();
 
+    watchForChanges()
+
   } catch (err) {
     console.error('Error during initial setup:', err);
   }
 })();
+
+/**
+ * Logs a formatted message with simplified file paths.
+ * @param {string} messageTemplate - The message template containing placeholders for paths.
+ * @param {...string} paths - The file paths to format and include in the message.
+ */
+function terminalLogs(message, ...paths) {
+    const formattedPaths = paths.map(filePath => {
+        if (filePath instanceof Error) {
+            return `Error: ${filePath.message}`;
+        } else if (typeof filePath === 'string') {
+            return path.relative(process.cwd(), filePath).replace(/\\/g, '/');
+        } else {
+            return String(filePath); // Fallback to convert other types to string
+        }
+    });
+
+    const formattedMessage = message.replace(/\{(\d+)\}/g, (match, index) => {
+        return formattedPaths[index];
+    });
+
+    console.log(formattedMessage);
+}
 
 function debounce(func, timeout){
   let timer;
@@ -274,6 +376,3 @@ function debounce(func, timeout){
     timer = setTimeout(() => { func.apply(this, args); }, timeout);
   };
 }
-
-
-

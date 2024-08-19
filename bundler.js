@@ -43,14 +43,15 @@ const bundleUtils = async (source, destination) => {
                     .trim();
 
                 bundledContent += `\n// ${file}\n` + minifiedContent + '\n';
-                console.log(`Bundled: ${filePath}`);
+                terminalLogs("Bundled:  '{0}';", filePath);
             } catch (err) {
                 console.error(`Error reading or processing ${filePath}:`, err);
+                terminalLogs("Error reading or processing: '{0}';", filePath, err);
             }
         }
         bundledContent += `export default Utils;`
         await fs.writeFile(destination, bundledContent);
-        console.log(`Bundled content written to: ${destination}`);
+        terminalLogs("Bundled content written to:  '{0}';", destination);
     } catch (err) {
         console.error('Error during bundling process:', err);
     }
@@ -71,3 +72,21 @@ export const bundler = async () => {
         bundles.map(bundle => bundleUtils(bundle.source, bundle.destination))
     );
 };
+
+
+/**
+ * Logs a formatted message with simplified file paths.
+ * @param {string} messageTemplate - The message template containing placeholders for paths.
+ * @param {...string} paths - The file paths to format and include in the message.
+ */
+function terminalLogs(message, ...paths) {
+    const formattedPaths = paths.map(filePath => {
+        return path.relative(process.cwd(), filePath).replace(/\\/g, '/');
+    });
+
+    const formattedMessage = message.replace(/\{(\d+)\}/g, (match, index) => {
+        return formattedPaths[index];
+    });
+
+    console.log(formattedMessage);
+}
