@@ -1,0 +1,38 @@
+<div class="grid grid-cols-1 md:grid-cols-{{ section.settings.grid_columns }} gap-4">
+{% for i in (1..3) %}
+
+{%  render 'article-highlight' %}
+
+{%  endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Article Highlights",
+  "settings": [
+    {
+      "type": "article",
+      "id": "article",
+      "label": "Article Data"
+    },
+    {
+      "type": "header",
+      "content": "Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Number of Columns",
+      "min": 1,
+      "max": 3,
+      "default": 2
+    }
+  ],
+  "presets": [
+      {
+        "name": "Article",
+        "category": "Articles"
+      }
+  ]
+}
+{% endschema %}

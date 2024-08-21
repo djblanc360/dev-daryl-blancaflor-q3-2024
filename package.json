@@ -13,7 +13,7 @@
     "share": "npm-run-all vite:build shopify theme share",
     "vite:dev": "echo 'running vite' && vite",
     "vite:build": "vite build",
-    "pull": "npm run shopify:pull -- --only=templates config/settings_data.json",
+    "pull": "shopify theme pull --only templates/ --only config/settings_data.json",
     "server": "node server/index.js"
   },
   "author": "",

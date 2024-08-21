@@ -12,19 +12,28 @@
     "collection": {
       "type": "collection",
       "settings": {
-        "product_collection": "frontpage",
-        "product_layout": "grid",
-        "carousel_heading": "Our Featured Products",
+        "collection": "",
+        "data_type": "products",
+        "layout": "grid",
+        "collection_heading": "Our Featured Products",
         "carousel_items": 5,
         "grid_columns": 4,
         "show_product_titles": true,
         "show_list_images": true,
         "show_list_descriptions": true
       }
+    },
+    "article_GJEzFn": {
+      "type": "article",
+      "settings": {
+        "article": "",
+        "grid_columns": 2
+      }
     }
   },
   "order": [
     "hero",
-    "collection"
+    "collection",
+    "article_GJEzFn"
   ]
 }
