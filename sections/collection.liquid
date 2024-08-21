@@ -1,1 +1,156 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/collection/sections/collection.liquid
+<div class="collection-wrapper">
+  {% comment %} <p>collection handle: {{ section.settings.product_collection }}</p>
+  <p>layout tpe: {{ section.settings.product_layout }}</p> {% endcomment %}
+  {% assign collection = collections[section.settings.product_collection] %}
+  {% if collection == blank %}
+    {% assign collection = collections['frontpage']%}
+  {% endif %}
+  {% if collection and collection.products.size > 0 %}
+    {% comment %} <p>products found: {{ collection.products.size }}</p> {% endcomment %}
+    {% assign products = collection.products %}
+    {% assign products_json = products | json | escape %}
+    {% case section.settings.product_layout %}
+      {% when 'carousel' %}
+        {% assign settings_json = section.settings | json | escape %}
+
+        <h2>{{ section.settings.carousel_heading }}</h2>
+        <div class="collection-carousel">
+          <base-carousel data-products="{{ products_json }}" data-settings="{{ settings_json }}">
+            <div class="swiper carousel">
+              <div class="swiper-wrapper">
+                {% for product in products %}
+                  <div class="swiper-slide">
+                    {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-pagination"></div>
+          </base-carousel>
+        </div>
+      {% when 'grid' %}
+        <h2>{{ collection.title }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-{{ section.settings.grid_columns }} gap-4">
+          {% for product in products %}
+            {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
+          {% endfor %}
+        </div>
+      {% when 'list' %}
+        <ul class="list-layout">
+          {% for product in products %}
+            <li>
+              {% if section.settings.show_list_images %}
+                <a href="{{ product.url }}">
+                  {% assign base_url = "https://cdn.shopify.com/s/files/1/0712/3140/6331/" %}
+                  {% assign product_image = product.images[0] %}
+                  {% for variant in product.variants %}
+                    {% if variant.image %}
+                      {% assign product_image = variant.image %}
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if product_image %}
+                    <img src="{{ base_url }}{{ product_image.src | split: '/' | last }}" alt="{{ product.title }}" width="100%" height="100%">
+                  {% endif %}
+                </a>
+              {% endif %}
+              <p>{{ product.title }}</p>
+              {% if section.settings.show_list_descriptions %}
+                <p>{{ product.description }}</p>
+              {% endif %}
+              <p>{{ product.price | money }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+    {% endcase %}
+  {% else %}
+    <p>no products found</p>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "product_collection",
+      "label": "Product Collection"
+    },
+    {
+      "type": "select",
+      "id": "product_layout",
+      "label": "Product Layout",
+      "default": "grid",
+      "options": [
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        },
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "list",
+          "label": "List"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "text",
+      "id": "carousel_heading",
+      "label": "Carousel Heading",
+      "default": "Our Featured Products"
+    },
+    {
+      "type": "range",
+      "id": "carousel_items",
+      "label": "Number of Items in Carousel",
+      "min": 1,
+      "max": 10,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Grid Settings"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Number of Columns",
+      "min": 2,
+      "max": 6,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_titles",
+      "label": "Show Product Titles",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "List Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_list_images",
+      "label": "Show Images in List",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_list_descriptions",
+      "label": "Show Descriptions in List",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

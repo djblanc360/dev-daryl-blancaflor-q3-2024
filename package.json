@@ -10,7 +10,7 @@
     "shopify:dev": "echo 'running shopify theme push' && shopify theme dev",
     "shopify:push": "shopify theme push",
     "shopify:pull": "shopify theme pull",
-    "share": "npm-run-all npm run shopify theme share",
+    "share": "npm-run-all vite:build shopify theme share",
     "vite:dev": "echo 'running vite' && vite",
     "vite:build": "vite build",
     "pull": "npm run shopify:pull -- --only=templates config/settings_data.json",

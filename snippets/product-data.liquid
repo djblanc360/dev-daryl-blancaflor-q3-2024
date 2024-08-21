@@ -1,1 +1,30 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/product/snippets/product-data.liquid
+<script>
+window.product = {
+  "id": {{ product.id | json }},
+  "handle": {{ product.handle | json }},
+  "title": {{ product.title | json }},
+  "available": {{ product.available | json }},
+  "price": {{ product.price | json }},
+  "compare_at_price": {{ product.compare_at_price | json }},
+  "variants": {{ product.variants | json }},
+  "selected_variant": {{ product.selected_or_first_available_variant | json }},
+  "options": {{ product.options | json }},
+  "options_with_values": {{ product.options_with_values | json }},
+  "images": {{ product.images | json }},
+  "first_image": {{ product.images.first | json }},
+  
+  {% if product.featured_image %}
+    "featured_image": {{ product.featured_image | json }},
+  {% else %}
+    "featured_image": null,
+  {% endif %}
+
+  "selected_options": {{ product.selected_or_first_available_variant.options | json }},
+  "preselect_variant": {{ preselect_variant | json }},
+  
+  "vendor": {{ product.vendor | json }},
+  "type": {{ product.type | json }},
+  "tags": {{ product.tags | json }},
+  "description": {{ product.description | escape | strip_newlines | json }}
+};
+</script>

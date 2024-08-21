@@ -1,20 +1,16 @@
 import { defineConfig } from 'vite';
 import shopify from 'vite-plugin-shopify';
-import liquid from '@vituum/vite-plugin-liquid'; // handle live reload for liquid files
 
 export default defineConfig({
   plugins: [
-    shopify(),
-    liquid({
-      root: './components',
-      formats: ['liquid'],
-    })
+    shopify()
   ],
   build: {
-    emptyOutDir: false,
+    emptyOutDir: false, //  true will clear assets directory before each build
     rollupOptions: {
       input: {
         main: './frontend/entrypoints/main.js',
+        styles: './frontend/entrypoints/main.css',
       },
       output: {
         entryFileNames: '[name]-[hash].js',

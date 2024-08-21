@@ -1,1 +1,19 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/customer/sections/customer.liquid
+<script>
+    const baseCustomer = localStorage.getItem('customer') 
+    ? JSON.parse(localStorage.getItem('customer')) : {};
+    baseCustomer.account = {
+        {% if customer %}
+            id:{{ customer.id | json }},
+            first_name:{{ customer.first_name | json }},
+            last_name:{{ customer.last_name | json }},
+            email:{{ customer.email | json }},
+            notes:{{ customer.notes | json }},
+            phone:{{ customer.phone | json }},
+            tags:{{ customer.tags | json }},
+            subscriptions:{}
+        {% endif %}
+    }
+    localStorage.setItem('customer', JSON.stringify(baseCustomer));
+
+
+</script>

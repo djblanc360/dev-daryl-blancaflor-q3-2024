@@ -1,1 +1,36 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/header/sections/header.liquid
+<section class='bg-red-300'>
+  <nav>
+    {%- render 'header' -%}
+  </nav>
+</section>
+
+
+{% comment %} <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = new Header(
+      '{{ section.settings.logo_src }}',
+      '{{ section.settings.account_url }}'
+    );
+    header.render();
+  });
+</script> {% endcomment %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    }
+  ]
+}
+{% endschema %}

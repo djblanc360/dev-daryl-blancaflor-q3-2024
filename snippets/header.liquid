@@ -1,1 +1,22 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/header/snippets/header.liquid
+<div>
+  <header class="header flex items-center justify-between p-4 bg-white shadow-md">
+    <div class="header__logo">
+      <a href="/" class="header__logo-link text-2xl font-bold text-gray-800">
+        {{ shop.name }}
+      </a>
+    </div>
+    <nav class="header__nav">
+      <ul class="header__nav-list flex space-x-6 text-{{ section.settings.text_color }}">
+        <li class="header__nav-item">
+          <a href="/collections/all" class="header__nav-link text-lg hover:text-gray-600">Shop</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="/pages/account" class="header__nav-link text-lg hover:text-gray-600">Account</a>
+        </li>
+        <li class="header__nav-item">
+          <a href="/pages/cart" class="header__nav-link text-lg hover:text-gray-600">Cart</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+</div>

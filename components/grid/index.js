@@ -1,8 +1,1 @@
-class Grid extends HTMLElement {
-  constructor() {
-    super();
-    console.log('grid component initialized');
-  }
-}
-
-customElements.define('grid-component', Grid);
+D:/Knowledge_Base/frontend/shopify-vite-build/assets/grid.js

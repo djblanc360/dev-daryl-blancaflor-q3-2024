@@ -1,1 +1,36 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/product/snippets/product-form.liquid
+<div class="product-form">
+<product-form>
+  <form action="/cart/add" method="post" id="product-form-{{ product.id }}" class="flex items-center justify-center gap-4">
+    <input type="hidden" name="id" id="product-variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+
+    <div id="qty-selector">
+      <div class="flex w-32 items-center justify-between">
+        <button aria-label="Reduce quantity of {{ product.title }} by 1" class="relative h-[3.125rem] w-1/4 border border-border transition disabled:opacity-50 cursor-not-allowed" type="button" id="qty-decrease">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 text-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+        <div class="relative flex h-[3.125rem] flex-1 border-y border-border items-center justify-center">
+          <input type="number" name="quantity" id="quantity-input" value="1" min="1" class="w-full text-center outline-none">
+        </div>
+        <button aria-label="Increase quantity of {{ product.title }} by 1" class="relative h-[3.125rem] w-1/4 border border-border md:hover:border-black transition" type="button" id="qty-increase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-1/2 top-1/2 w-4 -translate-x-1/2 -translate-y-1/2 text-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1">
+      <div>
+        <button [add-to-cart] aria-label="Add to Cart" class="btn-primary bg-primary font-karla py-6 text-white relative w-full Rise-add-to-cart-button" type="submit">
+          <p class="transition">Add to Cart</p>
+        </button>
+      </div>
+    </div>
+  </form>
+</product-form>
+</div>

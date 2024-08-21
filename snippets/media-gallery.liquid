@@ -1,1 +1,48 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/product/snippets/media-gallery.liquid
+{% assign base_url = "https://cdn.shopify.com/s/files/1/0712/3140/6331/files/" %}
+<div class="media-gallery">
+<media-gallery>
+{% comment %} <div class="media-gallery"> {% endcomment %}
+  <div class="md:sticky md:top-[calc(var(--header-height)-80px)]">
+    <div class="flex flex-col justify-center gap-4 md:flex-row xl:gap-5">
+
+      {% comment %} <!-- main image --> {% endcomment %}
+      <div class="relative order-1 md:order-2 md:flex md:max-h-[75vh] md:justify-center">
+        <div class="md:overflow-hidden relative md:bg-white md:h-[50vw] md:max-h-[75vh] md:max-w-[40vw]">
+
+          <div class="swiper gallery-main">
+            <div class="swiper-wrapper">
+              {% for image in product.images %}
+                <div class="swiper-slide">
+                  <img src="{{ base_url }}{{ image.src | split: '/' | last }}" alt="{{ image.alt }}" width="100%" height="100%">
+                </div>
+              {% endfor %}
+            </div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+
+        </div>
+      </div>
+      {% comment %} <!-- end main image --> {% endcomment %}
+
+      <div class="scrollbar-hide relative order-2 flex justify-center sm:h-0 md:h-[50vw] max-h-[75vh] w-auto overflow-x-auto md:order-1">
+        <div class="max-md:absolute max-md:left-0 max-md:top-0 max-md:w-full md:h-full">
+          {% comment %} <!-- media thumbnails --> {% endcomment %}
+          <div class="swiper gallery-thumbs h-full">
+            <div class="swiper-wrapper">
+              {% for image in product.images %}
+                <div class="swiper-slide">
+                  <img class="object-cover h-auto lg:h-full" src="{{ base_url }}{{ image.src | split: '/' | last }}" alt="{{ image.alt }}" width="100%" height="100%">
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+        {% comment %} <!-- end media thumbnails --> {% endcomment %}
+      </div>
+    </div>
+  </div>
+{% comment %} </div> {% endcomment %}
+</media-gallery>
+</div>

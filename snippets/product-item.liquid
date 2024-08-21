@@ -1,1 +1,64 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/product/snippets/product-item.liquid
+<div class="flex h-full flex-col">
+  <div class="relative flex w-full flex-col">
+    <div class="group relative mb-[13px] w-full">
+      <a class="mb-3 w-full" aria-label="Drop-Cut: LUX" tabindex="-1" href="{{ product.url }}">
+        <div class="group/media relative bg-[#e5e5e5] p-[125%_0_0]">
+          {% assign base_url = "https://cdn.shopify.com/s/files/1/0712/3140/6331/files/" %} {% comment %} ISSUE WITH BASE {% endcomment %}
+          {% assign product_image = product.images[0] %}
+          {% assign product_image_2 = product.images[1] %}
+          <div class="opacity-100 transition duration-300 md:group-hover/media:opacity-0 mix-blend-multiply">
+              <img src="{{ base_url }}{{ product_image.src | split: '/' | last }}" alt="{{ product.title }}" class="absolute inset-0 h-full w-full object-cover" width="100%" height="100%">
+          </div>
+          <div class="hidden opacity-0 transition duration-300 md:block md:group-hover/media:opacity-100 mix-blend-multiply">
+              <img src="{{ base_url }}{{ product_image_2.src | split: '/' | last }}" alt="{{ product.title }}" class="absolute inset-0 h-full w-full object-cover" width="100%" height="100%">
+          </div>
+          <div class="pointer-events-none absolute left-0 top-0 z-[1] p-2.5 xs:p-3 xl:p-4">
+            <div class="text-label flex flex-wrap gap-2.5 xs:gap-3">
+              <div class="flex items">
+                <svg class="w-4 h-4 xs:w-5 xs:h-5 xl:w-6 xl:h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+                </svg>
+                <span class="text-xs xs:text-sm xl:text-base">Quick View</span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </a>
+      <div class="absolute bottom-[30px] z-[9] flex w-full justify-center text-center max-lg:hidden">
+        {{ product.title }}
+      </div>
+    </div>
+    <div class="flex flex-1 flex-col">
+      <div class="flex justify-between">
+        <a aria-label="{{ product.title }}" tabindex="-1" href="{{ product.url }}">
+          <h3 class="card-title text-bold uppercase">{{ product.title }}</h3>
+        </a>
+        <small class="text-nowrap flex h-[20px] items-center whitespace-nowrap rounded-full border-[1px] border-[#989898] px-2 py-[1px] text-[7px] font-bold uppercase text-[#989898] max-md:mr-0 max-md:text-[8px] md:py-1">LUX</small>
+      </div>
+      <div class="mt-1 flex flex-1 flex-wrap gap-x-1">
+        <p class="min-h-[1.25rem] text-sm null">$35</p>
+      </div>
+      <p class="mt-1 font-sans text-[12px] font-bold italic !leading-none leading-[14px] text-[#989898]">{{ product.variants[0].title }}</p>
+    </div>
+  </div>
+    <div class="mt-2">
+        {% comment %} if product variant colors exist {% endcomment %}
+        {% if product.variants.size > 1 %}
+        <ul class="flex flex-wrap gap-1 max-lg:[&>*:nth-child(n+5)]:hidden lg:[&>*:nth-child(n+7)]:hidden">
+            {% for variant in product.variants %}
+            <li>
+                <div class="group/color relative">
+                    <button aria-label="Select {{ variant.title }} color variant" class="relative flex h-4 w-4 items-center justify-center overflow-hidden rounded-[50%] border border-border transition md:hover:border-text border-text" type="button">
+                        {% comment %} assign 1st option name to background color in tailwind {% endcomment %}
+                        {% assign color = variant.options[0].name | downcase %}
+                        <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-{{ color }} rounded-[50%]"></div>
+                        <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-[50%] border-white transition-[border-width] duration-100 border-[2px]"></div>
+                    </button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>

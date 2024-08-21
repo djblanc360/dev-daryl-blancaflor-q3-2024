@@ -1,1 +1,42 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/product/snippets/variant-swatch.liquid
+<div class="variant-swatch">
+<variant-swatch>
+  <div class="flex flex-col gap-2.5 md:gap-5">
+
+    {% assign colors = '' | split: '' %}
+    {% assign sizes = '' | split: ''%}
+    {% for option in product.options %}
+      {% assign selected_variant = product.selected_or_first_available_variant %}
+      {% assign option_index = forloop.index0 %}
+      <div class="border-border p-4 max-md:px-0 md:border">
+        <div class="flex items-center gap-2">{{ option }}: <span>{{ selected_variant.options[option_index] }}</span></div>
+        <ul class="mb-2 flex flex-wrap gap-4">
+          {% for variant in product.variants %}
+
+            {% if option_index == 0 %}
+              {% assign color = variant.options[option_index].name | downcase %}
+              {% unless colors contains color %}
+                {% assign colors = colors | append: color %}
+              <li>
+                <button class="bg-{{ color }} w-8 h-8 rounded-full border border-border" data-variant-id="{{ variant.id }}"></button>
+              </li>
+            {% endunless %}
+            {% endif %}
+
+
+            {% if option_index == 1 %}
+              {% assign size = variant.options[option_index].name | downcase %}
+              {% unless sizes contains size %}
+                {% assign sizes = sizes | append: size %}
+              <li>
+                <button class="relative h-10 w-auto min-w-[2.5rem] border border-border transition md:hover:border-text  rounded-sm" data-variant-id="{{ variant.id }}">{{ size }}</button>
+              </li>
+              {% endunless %}
+            {% endif %}
+
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</variant-swatch>
+</div>

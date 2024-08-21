@@ -1,1 +1,90 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/promotions/sections/promotions.liquid
+
+<script>
+  const promotions = [
+
+    {% for block in section.blocks %}
+      {% if block.type == 'promotion' %}
+        {
+          key: "{{ block.settings.key | escape }}",
+          title: "{{ block.settings.title | escape }}",
+          message: "{{ block.settings.message | escape }}",
+          utm_medium: "{{ block.settings.utm_medium | escape }}",
+          discountCode: "{{ block.settings.discountCode | escape }}",
+          isActive: {{ block.settings.isActive }},
+          condition: "{{ block.settings.condition | strip_newlines  }}"
+        }{% unless forloop.last %},{% endunless %}
+      {% endif %}
+    {% endfor %}
+
+    {% comment %} condition: "{{ block.settings.condition | escape }}" {% endcomment %}
+
+  ];
+  localStorage.setItem('promotions', JSON.stringify(promotions));
+  window.promotions = promotions; // just for testing
+</script>
+
+{% schema %}
+{
+  "name": "Promotions",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "promotion",
+      "name": "Promotion",
+      "settings": [
+        {
+          "type": "text",
+          "id": "key",
+          "label": "Promotion Key",
+          "default": "promo_key"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Promotion Title",
+          "default": "Promotion Title"
+        },
+        {
+          "type": "textarea",
+          "id": "message",
+          "label": "Promotion Message",
+          "default": "Promotion message"
+        },
+        {
+          "type": "text",
+          "id": "utm_medium",
+          "label": "UTM Medium",
+        },
+        {
+          "type": "text",
+          "id": "discountCode",
+          "label": "Discount Code",
+        },
+        {
+          "type": "checkbox",
+          "id": "isActive",
+          "label": "Is Active",
+          "default": true
+        },
+        {
+          "type": "liquid",
+          "id": "condition",
+          "label": "Condition",
+          "info": "Example: 'cart.total > 1000'"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default",
+      "category": "Promotions",
+      "blocks": [
+        {
+          "type": "promotion"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

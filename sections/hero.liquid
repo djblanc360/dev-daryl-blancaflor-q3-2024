@@ -1,1 +1,44 @@
-D:/FullStack/Frontend-Developer-Applied_Positions/Beyond Group/dev-daryl-blancaflor-q3-2024/components/hero/sections/hero.liquid
+<section class="hero bg-cover bg-center" style="background-image: url('{{ section.settings.background_image | img_url: '1600x' }}');">
+  <div class="hero__content text-center py-20 bg-opacity-50 bg-black text-white">
+    <h1 class="hero__title text-4xl font-bold mb-4">{{ section.settings.title }}</h1>
+    <p class="hero__subtitle text-xl mb-6">{{ section.settings.subtitle }}</p>
+    <a href="{{ section.settings.button_link }}" class="hero__button bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded">{{ section.settings.button_text }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "BYLT Basics"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "premium basics"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    }
+  ]
+}
+{% endschema %}
