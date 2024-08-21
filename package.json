@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm run symlinks\" \"npm run vite:dev\" \"npm run shopify:dev\"",
-    "deploy": "npm-run-all npm run vite:build shopify:push",
+    "deploy": "npm-run-all vite:build shopify:push",
     "symlinks": "echo 'running symlinks' && node symlinks.js",
     "shopify:dev": "echo 'running shopify theme push' && shopify theme dev",
     "shopify:push": "shopify theme push",
