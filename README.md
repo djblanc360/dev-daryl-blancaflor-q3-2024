@@ -4,24 +4,21 @@
 This project showcases my thought process in organizing various components in their function and their relationships with other components. This project reflects my ideal development process for a Shopify theme. This project is my attempt to a scalable architecture for large-scale Shopify websites.
 
 dev store password: beyondgroupdaryl
-collection page: https://beyond-group-promo-banner.myshopify.com/collections/all
-product page: https://beyond-group-promo-banner.myshopify.com/products/womens-fairway-quarter-zip
 
 ## Symlink Feature
+* Created a `utilities/` directory where `symlinks.js` will bundle each file in folder to a single `utils.js` file in `assets/` directory
 
 ### Example Liquid File:
-`header.liquid` file in `components/header/sections/` while running `npm run dev`
-should create a `header.liquid` file in `sections/` then reference any changes from the `components/header/sections/header.liquid` file.
+`header.liquid` file in `components/header/sections/` while running `npm run dev` should create a `header.liquid` file in `sections/`. The origin is set to the newly created `sections/header.liquid`. Then a symlink is created to reference any changes from the `components/header/sections/header.liquid` file.
 
 ### Example JavaScript File:
 `index.js` file in `components/header/index.js` while running `npm run dev`
-should create a `header.js` file in `assets/` then reference any changes from the `components/header/index.js` file.
+should create a `header.js` file in `assets/`. The origin is set to the newly created `assets/header.js`. Then a symlink is created to reference any changes from the `components/header/index.js` file.
 
 `nav.js` file in `components/header/nav.js` while running `npm run dev`
-should create a `header_nav.js` file in `assets/` then reference any changes from the `components/header/nav.js` file.
+should create a `header_nav.js` file in `assets/`. The origin is set to the newly created `assets/header_nav.js`. Then a symlink is created to  reference any changes from the `components/header/nav.js` file.
 
-## Symlink Build Feature
-- symbolic link reversal on `npm run reverse-symlinks` when its time to build to a store such as on `shopify theme share`.
+The content of `polling.js` file in `utilities/` directory is bundled into `utils.js` file in `assets/` directory.
 
 ### Example Development to Production Process
 1.
@@ -86,7 +83,6 @@ customer.ipTracking.countryCode !== 'US'
 ### Symlink Build
 - **concurrently**: JavaScript runtime.
 - **chokidar**: To simplify file watching cross platform.
-- **@vituum/vite-plugin-liquid**: Plugin for processing liquid
 
 ### Backend
 - **node-fetch**: Fetch API for Node.js
@@ -111,8 +107,6 @@ Set up `npm run pull` to run in a new terminal alongside `npm run dev` to pull i
 Set up `npm run server` to concurrently run a backend service. The backend service retrieves the user's ip data to enrich their customer profile.
 
 ## Future Updates
-
-* create a `utilities/` directory where `symlinks.js` will bundle each file in folder to a single `utils.js` file in `assets/` directory
 
 * refactor `components/modals/index.js` to have promotions logic in separate `components/modals/promotions.js`
 

@@ -21,7 +21,6 @@
   "description": "",
   "devDependencies": {
     "@shopify/cli": "^3.61.2",
-    "@vituum/vite-plugin-liquid": "^1.1.0",
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "npm-run-all": "^4.1.5",
