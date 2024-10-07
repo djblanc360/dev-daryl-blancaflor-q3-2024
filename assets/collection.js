@@ -49,6 +49,64 @@ class Carousel extends HTMLElement {
   }
 }
 
+class OptionSwatch extends HTMLElement {
+  constructor() {
+    super();
+    this.productId = this.dataset.productId;
+    this.collectionId = this.dataset.collectionId;
+    this.product = window.collections[this.collectionId]?.products.find(product => product.id == this.productId);
+    // console.log('in OptionSwatch product', this.product);
+    if (!this.product) {
+      console.error(`Product with ID ${this.productId} not found in collection ${this.collectionId}`);
+    }
+  }
+
+  selectVariant(variant) {
+    console.log('selectVarian variant', variant);
+    const event = new CustomEvent('variantChange', { detail: { variant } });
+    this.dispatchEvent(event);
+  }
+
+  connectedCallback() {
+    this.querySelectorAll('[option-swatch]').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const variantId = swatch.dataset.variantId
+            console.log('on option swatch click', variantId)
+            const selectedVariant = this.product.variants.find(variant => variant.id == variantId);
+            if (selectedVariant) {
+                this.selectVariant(selectedVariant);
+            }
+        })
+    })
+
+    this.addEventListener('variantChange', (event) => {
+        const { variant } = event.detail;
+        console.log('variant', variant);
+
+        const card = this.closest('[product-card]');
+        // console.log('card', card);
+  
+        if (card) {
+          const allImages = card.querySelectorAll('img[option-image]');
+          allImages.forEach(image => image.classList.add('hidden'));
+
+          const matchingImage = Array.from(allImages).find(img => img.alt === variant.option1);
+          if (matchingImage) {
+            matchingImage.classList.remove('hidden'); // Show the matching image
+          }
+            const optionTitle = card.querySelector('[option-title]');
+            optionTitle.textContent = variant.option1;
+
+            const optionLink = card.querySelector('[option-url]');
+            const baseUrl = optionLink.getAttribute('href').split('?')[0];
+            const optionUrl = `${baseUrl}?variant=${variant.id}`;
+            optionLink.setAttribute('href', optionUrl)
+        }
+        
+    });
+  }
+}
+
 class Collection {
   constructor() {
     this.init();
@@ -57,6 +115,7 @@ class Collection {
   init() {
     // init collection-specific logic
     customElements.define('base-carousel', Carousel);
+    customElements.define('option-swatch', OptionSwatch);
   }
 }
 

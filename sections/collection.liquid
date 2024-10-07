@@ -23,7 +23,7 @@
                 <div class="swiper-wrapper">
                   {% for product in products %}
                     <div class="swiper-slide">
-                      {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
+                      {% render 'product-item', collection: collection, product: product, show_titles: section.settings.show_product_titles %}
                     </div>
                   {% endfor %}
                 </div>
@@ -37,7 +37,7 @@
           <h2>{{ collection.title }}</h2>
           <div class="grid grid-cols-1 md:grid-cols-{{ section.settings.grid_columns }} gap-4">
             {% for product in products %}
-              {% render 'product-item', product: product, show_titles: section.settings.show_product_titles %}
+              {% render 'product-item', collection: collection, product: product, show_titles: section.settings.show_product_titles %}
             {% endfor %}
           </div>
         {% when 'list' %}
@@ -76,6 +76,14 @@
   {% endcase %}
   
 </div>
+<script>
+  window.collections = window.collections || {};
+
+  window.collections[{{ collection.id }}] = window.collections[{{ collection.id }}] || {};
+  window.collections[{{ collection.id }}].products = {{ collection.products | json }};
+  console.log('window collections ', window.collections)
+</script>
+
 
 {% schema %}
 {

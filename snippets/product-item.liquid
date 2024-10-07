@@ -1,17 +1,24 @@
-<div class="flex h-full flex-col">
+<div class="flex h-full flex-col" product-card>
   <div class="relative flex w-full flex-col">
     <div class="group relative mb-[13px] w-full">
-      <a class="mb-3 w-full" aria-label="Drop-Cut: LUX" tabindex="-1" href="{{ product.url }}">
+      <a class="mb-3 w-full" aria-label="Drop-Cut: LUX" tabindex="-1" href="{{ product.url | within: collection }}" option-url>
         <div class="group/media relative bg-[#e5e5e5] p-[125%_0_0]">
           {% assign base_url = "https://cdn.shopify.com/s/files/1/0712/3140/6331/files/" %} {% comment %} ISSUE WITH BASE {% endcomment %}
           {% assign product_image = product.images[0] %}
           {% assign product_image_2 = product.images[1] %}
-          <div class="opacity-100 transition duration-300 md:group-hover/media:opacity-0 mix-blend-multiply">
-              <img src="{{ base_url }}{{ product_image.src | split: '/' | last }}" alt="{{ product.title }}" class="absolute inset-0 h-full w-full object-cover" width="100%" height="100%">
+          {% comment %} <div class="opacity-100 transition duration-300 md:group-hover/media:opacity-0 mix-blend-multiply"> {% endcomment %}
+          <div class="mix-blend-multiply">
+            {% for media in product.media %}
+              <img src="{{ base_url }}{{ media.src | split: '/' | last }}" 
+                   alt="{{ media.alt }}" 
+                   class="absolute inset-0 h-full w-full object-cover {% unless forloop.first %}hidden{% endunless %}" 
+                   width="100%" height="100%" 
+                   option-image>
+            {% endfor %}
           </div>
-          <div class="hidden opacity-0 transition duration-300 md:block md:group-hover/media:opacity-100 mix-blend-multiply">
+          {% comment %} <div class="hidden opacity-0 transition duration-300 md:block md:group-hover/media:opacity-100 mix-blend-multiply">
               <img src="{{ base_url }}{{ product_image_2.src | split: '/' | last }}" alt="{{ product.title }}" class="absolute inset-0 h-full w-full object-cover" width="100%" height="100%">
-          </div>
+          </div> {% endcomment %}
           <div class="pointer-events-none absolute left-0 top-0 z-[1] p-2.5 xs:p-3 xl:p-4">
             <div class="text-label flex flex-wrap gap-2.5 xs:gap-3">
               <div class="flex items">
@@ -39,26 +46,39 @@
       <div class="mt-1 flex flex-1 flex-wrap gap-x-1">
         <p class="min-h-[1.25rem] text-sm null">$35</p>
       </div>
-      <p class="mt-1 font-sans text-[12px] font-bold italic !leading-none leading-[14px] text-[#989898]">{{ product.variants[0].title }}</p>
+      <p class="mt-1 font-sans text-[12px] font-bold italic !leading-none leading-[14px] text-[#989898]" option-title>{{ product.selected_or_first_available_variant.option1 }}</p>
     </div>
   </div>
     <div class="mt-2">
         {% comment %} if product variant colors exist {% endcomment %}
         {% if product.variants.size > 1 %}
-        <ul class="flex flex-wrap gap-1 max-lg:[&>*:nth-child(n+5)]:hidden lg:[&>*:nth-child(n+7)]:hidden">
-            {% for variant in product.variants %}
-            <li>
-                <div class="group/color relative">
-                    <button aria-label="Select {{ variant.title }} color variant" class="relative flex h-4 w-4 items-center justify-center overflow-hidden rounded-[50%] border border-border transition md:hover:border-text border-text" type="button">
-                        {% comment %} assign 1st option name to background color in tailwind {% endcomment %}
-                        {% assign color = variant.options[0].name | downcase %}
-                        <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-{{ color }} rounded-[50%]"></div>
-                        <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-[50%] border-white transition-[border-width] duration-100 border-[2px]"></div>
-                    </button>
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
+            <option-swatch data-product-id="{{ product.id }}" data-collection-id="{{ collection.id }}">
+            {% assign colors = '' | split: '' %}
+            <ul class="flex flex-wrap gap-1 max-lg:[&>*:nth-child(n+5)]:hidden lg:[&>*:nth-child(n+7)]:hidden">
+                {% for variant in product.variants %}
+                    {% if product.options.size > 1 %}
+
+                      {% assign color = variant.options[0].name | downcase %}
+                      {% unless colors contains color %}
+                        {% assign colors = colors | append: color %}
+                <li>
+                    <div class="group/color relative">
+                        <button 
+                          option-swatch 
+                          data-variant-id="{{ variant.id }}"
+                          aria-label="Select {{ variant.title }} color variant" 
+                          class="relative flex h-4 w-4 items-center justify-center overflow-hidden rounded-[50%] border border-border transition md:hover:border-text border-text" type="button">
+                            {% comment %} assign 1st option name to background color in tailwind {% endcomment %}
+                            <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 bg-{{ color }} rounded-[50%]"></div>
+                            <div class="absolute left-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 rounded-[50%] border-white transition-[border-width] duration-100 border-[2px] hover:border-black focus:border-black active:border-black"></div>
+                        </button>
+                    </div>
+                </li>
+                        {% endunless %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            </option-swatch>
         {% endif %}
     </div>
 </div>

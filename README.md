@@ -23,28 +23,30 @@ The content of `polling.js` file in `utilities/` directory is bundled into `util
 ### Example Development to Production Process
 1.
 run `npm run dev`
-- original file `components/sections/product.liquid` creates a symbolic link to `sections/product.liquid`
-- when pushing to github ,`components/sections/product.liquid` has the code and `sections/product.liquid` has the reference to `components/sections/product.liquid`
+- Create file `components/sections/product.liquid` is moved to `sections/product.liquid`, the reference to the origin `components/sections/product.liquid` is saved. 
+- `sections/product.liquid` becomes the new origin and the reference to the `components/sections/product.liquid` origin is retrieved.
+- A symbolic link `sections/product.liquid` from `components/sections/product.liquid` is created.
+- when pushing to github ,`sections/product.liquid` has the code and `components/sections/product.liquid` has the reference to `sections/product.liquid`.
 
 2.
-terminate `npm run dev`
-- when viewing on shopify store, will just see a string local file reference to `components/sections/product.liquid`
+run `npm run pull`
+- Section schema is created in `components/sections/product.liquid`.
+- The contents of a particular section using that schema is updated in the Shopify Admin.
+- In another terminal, run the command to retrieve the updated cusom settings.
+- When viewing on shopify store, will just see a string local file reference to `components/sections/product.liquid`.
 
 3.
 on `npm run build` or `shopify theme share`
-- run `reverse-symlinks.js`
-- so now `sections/product.liquid` has the code and `components/sections/product.liquid` has the reference to `sections/product.liquid`
-- when viewing on shopify store, should see actual content of `product.liquid`
+- Run `reverse-symlinks.js`.
+- So now `sections/product.liquid` has the code and `components/sections/product.liquid` has the reference to `sections/product.liquid`.
+- When viewing on shopify store, should see actual content of `product.liquid`.
 
-4.
-if need to make changes, run `npm run dev`
-- when viewing `components/sections/product.liquid`, it should have the code to make changes
 
 ## Promotions Feature
 - Organized into global section, each block is a promotion.
 - All promotions are stored in the window for use in admin schema settings that accept JavaScript expressions.
 - All promotions are stored in local storage for persistent state.
-- A promotion can accept a `utm_medium` parameter or discount code which must have either exist in the connect
+- A promotion can accept a `utm_medium` parameter or discount code which must have either exist in the connect.
 - A promotion has a `condition` input for more specific logic
 show this modal if a user dismissed a particular modal 3 times or more:
 ```
@@ -110,7 +112,9 @@ Set up `npm run server` to concurrently run a backend service. The backend servi
 
 * refactor `components/modals/index.js` to have promotions logic in separate `components/modals/promotions.js`
 
-* create `/integrations` directory to organize 3rd-party services
+* create `integrations/` directory to organize 3rd-party services
+
+* create symlink process for `.css` files in the `components/` directory
 
 * create an interface API (BFF architecture) to translate and structure data coming form 3rd-party services
 
