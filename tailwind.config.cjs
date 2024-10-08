@@ -41,6 +41,8 @@ module.exports = {
     }
   },
   safelist: [
+    'border-black',
+    'border-ivory',
     'bg-black',
     'bg-grey',
     'bg-ivory',

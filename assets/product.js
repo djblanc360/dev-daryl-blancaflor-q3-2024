@@ -17,7 +17,12 @@ class ProductForm extends HTMLElement {
   }
 
   init() {
-    console.log('in ProductForm');
+    // console.log('in ProductForm');
+    window.addEventListener('variantChange', this.updateForm.bind(this));
+  }
+
+  updateForm(event) {
+
   }
 
   addToCart() {}
@@ -26,15 +31,75 @@ class ProductForm extends HTMLElement {
 class VariantSwatch extends HTMLElement {
   constructor() {
     super();
-    console.log('in VariantSwatch');
+    this.product = window.product;
+    this.selectedOptions = [...this.product.selected_options]
+  }
+
+  initSwatches() {
+    this.querySelectorAll('button[swatch]').forEach((swatch) => {
+      swatch.addEventListener('click', (event) => {
+        const optionValue = event.target.dataset.option;
+        const optionIndex = event.target.dataset['optionIndex'];
+        console.log('index, value ',optionIndex , optionValue)
+        this.selectOption(optionIndex , optionValue)
+
+
+        const variantId = event.target.dataset.variantId;
+        const selectedVariant = this.product.variants.find(variant => variant.id == variantId);
+        if (selectedVariant) {
+          this.selectVariant(selectedVariant);
+        }
+      });
+    });
+  }
+
+  selectOption(index, value) {
+    this.selectedOptions[index] = value;
+    console.log('pdp - in select variant, selected options: ',this.selectedOptions)
+
+    this.querySelectorAll(`button[swatch][data-option-index="${index}"]`).forEach((swatch) => {
+      if (swatch.dataset.option === value) {
+        swatch.classList.add('border-black');
+      } else {
+        swatch.classList.remove('border-black');
+      }
+    });
+
+    this.optionTitle(index, value);
+  }
+
+  optionTitle(index, value) {
+    const title = this.querySelector(`[option-title][data-option-index="${index}"]`);
+    if (title) {
+      title.textContent = value;
+    }
+  }
+
+  initOptions() {
+    for (const [index, option] of this.selectedOptions.entries()) {
+      this.selectOption(index, option)
+    }
   }
 
   selectVariant(variant) {
+    this.selectedOptions = variant.options;
+
     const event = new CustomEvent('variantChange', { detail: { variant } });
     this.dispatchEvent(event);
   }
 
+  initVariant() {
+    const selected = this.product.selected_variant;
+    if (selected) {
+        this.selectVariant(selected);
+    }
+  }
+
   connectedCallback() {
+    // initialize swatches once the component is connected
+    this.initSwatches();
+    this.initOptions();
+    this.initVariant();
   }
 }
 // customElements.define('variant-swatch', VariantSwatch);

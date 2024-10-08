@@ -7,28 +7,40 @@
     {% for option in product.options %}
       {% assign selected_variant = product.selected_or_first_available_variant %}
       {% assign option_index = forloop.index0 %}
-      <div class="border-border p-4 max-md:px-0 md:border">
-        <div class="flex items-center gap-2">{{ option }}: <span>{{ selected_variant.options[option_index] }}</span></div>
+      <div class="border-border p-4 max-md:px-0 md:border" option>
+        <div class="flex items-center gap-2">
+          {{ option }}: <span data-option="{{ option }}" data-option-index="{{ option_index }}" option-title>{{ selected_variant.options[option_index] }}</span>
+        </div>
         <ul class="mb-2 flex flex-wrap gap-4">
           {% for variant in product.variants %}
 
             {% if option_index == 0 %}
-              {% assign color = variant.options[option_index].name | downcase %}
+              {% assign color = variant.options[option_index].name %}
               {% unless colors contains color %}
                 {% assign colors = colors | append: color %}
               <li>
-                <button class="bg-{{ color }} w-8 h-8 rounded-full border border-border" data-variant-id="{{ variant.id }}"></button>
+                <button 
+                  swatch 
+                  class="bg-{{ color | downcase }} w-8 h-8 rounded-full border-2 hover:border-black active:border-black" 
+                  data-variant-id="{{ variant.id }}"
+                  data-option="{{ color }}"
+                  data-option-index={{ option_index }}></button>
               </li>
             {% endunless %}
             {% endif %}
 
 
             {% if option_index == 1 %}
-              {% assign size = variant.options[option_index].name | downcase %}
+              {% assign size = variant.options[option_index].name %}
               {% unless sizes contains size %}
                 {% assign sizes = sizes | append: size %}
               <li>
-                <button class="relative h-10 w-auto min-w-[2.5rem] border border-border transition md:hover:border-text  rounded-sm" data-variant-id="{{ variant.id }}">{{ size }}</button>
+                <button 
+                  swatch 
+                  class="relative h-10 w-auto min-w-[2.5rem] border-2 hover:border-black active:border-black transition md:hover:border-text rounded-sm" 
+                  data-variant-id="{{ variant.id }}"
+                  data-option="{{ size}}"
+                  data-option-index={{ option_index }}>{{ size | downcase }}</button>
               </li>
               {% endunless %}
             {% endif %}
